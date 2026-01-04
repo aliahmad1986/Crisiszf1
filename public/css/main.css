@@ -1912,8 +1912,8 @@ label.form-check-label {
 }
 
 .box-card.mini span:last-of-type {
-  line-height: 1;
-  font-size: 30px;
+  line-height: 3;
+  font-size: 25px;
   color: #595959;
 }
 

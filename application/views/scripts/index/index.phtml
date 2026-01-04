@@ -38,30 +38,30 @@
                     <div class="row ">
                         <div class="col-md-4 card shade mw-center mh-center">
                       
-                            <img src="./svg/tire.svg" alt="..." class="mw-center " height="130" width="300">
-                            <strong class="fnt-code c-primary titr"><?php echo $this->translate('welcome'); ?></strong>
+                            <img src="./svg/tire.svg" alt="..." class="mw-center">
+                            <strong class="fnt-code c-primary titr"><?php echo $this->translate('sysname'); ?></strong>
                             <hr class="hr-dashed m-0">
                             <form action="/index/login" method="post">
                                 <div class="form-group m-0" style="direction:rtl;text-align:right">
-                                    <label for="username">نام کاربری </label>
+                                    <label for="username"><?php echo $this->translate('username'); ?> </label>
                                     <input type="username" name="usr" class="form-control" id="username"
-                                        aria-describedby="userHelp" placeholder="نام کاربری خود را وارد کنید.">
+                                        aria-describedby="userHelp" placeholder="<?php echo $this->translate('enter_user_name')?>">
                                     <small id="userHelp" class="form-text text-muted" style="color:red !important">
-                                        *نام کاربری و پسورد خود را در اختیار دیگران قرار ندهید*
+                                    <?php echo $this->translate('notice_pass')?>   
                                     </small>
                                 </div>
                                 <div class="form-group m-0" style="direction:rtl;text-align:right">
                                     <label for="password">
-                                        رمز عبور
+                                       <?php echo $this->translate('password'); ?>
                                     </label>
                                     <input type="password" class="form-control" name="pwd" id="exampleInputPassword1"
-                                        placeholder="رمز عبور خود را با رعایت نکات ایمنی وارد کنید.">
+                                        placeholder="<?php echo $this->translate('enter_pass')?>">
                                 </div>
                                 <div class="form-check pt-2">
 
                                 </div>
                                 <button type="submit" class="btn shade f-primary btn-block"
-                                    style="text-align:center">ورود با سامانه</button>
+                                    style="text-align:center"><?php echo $this->translate('enter_sys')?></button>
                             </form>
 
                         </div>
