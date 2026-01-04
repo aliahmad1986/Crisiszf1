@@ -1,0 +1,119 @@
+<form role="form" class="frm" method="POST" enctype="multipart/form-data"
+    action="<?php $this->baseUrl() ?>/Setting/Mngcopon/Savecopon" id="frmAddcopon">
+    <?php
+    if (isset($this->toolbars)) {
+        ?>
+        <div class="row" style="direction:ltr;margin-bottom: 10px;">
+            <header class="">
+                <div class="animate__animated animate__fadeInDown">
+                    <ul class="nav navbar-nav ">
+
+                        <?php
+                        foreach ($this->toolbars as $keytools => $tools):
+                            ?>
+                            <li class="nav-item">
+                                <?php
+                                echo $tools;
+                                ?>
+                            </li>
+
+                            <?php
+                        endforeach;
+                        ?>
+
+
+                    </ul>
+                </div>
+            </header>
+        </div>
+        <?php
+    }
+    ?>
+    <?php
+    if (isset($this->Copon)):
+        ?>
+        <input name="<?php
+        $detailinputname = array('name' => "ID_COPON", 'title' => "شماره اختصاصی", 'required' => 1, 'encrypt' => 1);
+        echo base64_encode(Application_Model_Func_Crypt::Encrypt(json_encode($detailinputname)));
+        ?>" type="hidden"
+            value="<?php echo base64_encode(Application_Model_Func_Crypt::Encrypt($this->Copon['ID_COPON'])) ?>" />
+        <?php
+    endif
+    ?>
+    <div class="row">
+    <div class="col-xs-10 col-sm-10 col-md-5 col-lg-5">
+            <div class="form-group">
+                <label for="namecopon"> نام کوپن <span class="required">*</span></label>
+                <input type="text" class="form-control" value="<?php
+                if (isset($this->Copon)):
+                    echo $this->Copon['NAME_COPON'];
+                endif;
+                ?>" id="namecopon" name="<?php
+                $detailinputname = array('name' => "NAME_Copon", 'title' => "نام کوپن", 'required' => 1);
+                echo base64_encode(Application_Model_Func_Crypt::Encrypt(json_encode($detailinputname)));
+                ?>" required='required' placeholder="نام کوپن را وارد کنید">
+            </div>
+        </div>
+        <div class="col-xs-10 col-sm-10 col-md-5 col-lg-5">
+            <div class="form-group">
+                <label for="NCopon">کوپن تخفیف <span class="required">*</span></label>
+                <input type="text" class="form-control" value="<?php
+                if (isset($this->Copon)):
+                    echo $this->Copon['TXT_COPON'];
+                endif;
+                ?>" id="NCopon" name="<?php
+                $detailinputname = array('name' => "TXT_COPON", 'title' => "کوپن تخفیف", 'required' => 1);
+                echo base64_encode(Application_Model_Func_Crypt::Encrypt(json_encode($detailinputname)));
+                ?>" required='required' placeholder="متن کوپن را وارد کنید">
+            </div>
+        </div>
+        <div class="col-xs-10 col-sm-10 col-md-5 col-lg-5">
+            <div class="form-group">
+                <label for="NCopon">درصدد تخفیف  <span class="required">*</span></label>
+                <input type="text" class="form-control" value="<?php
+                if (isset($this->Copon)):
+                    echo $this->Copon['OFFER_COPON'];
+                endif;
+                ?>" id="NCopon" name="<?php
+                $detailinputname = array('name' => "OFFER_COPON", 'title' => "درصدد تخفیف", 'required' => 1);
+                echo base64_encode(Application_Model_Func_Crypt::Encrypt(json_encode($detailinputname)));
+                ?>" required='required' placeholder="درصد تخفیف کوپن را وارد کنید">
+            </div>
+        </div>
+        <div class="col-xs-10 col-sm-10 col-md-5 col-lg-5">
+            <div class="form-group">
+                <label for="avail">فعال </label>
+                <input type="checkbox" class=""
+                <?php 
+                if($this->Copon['ACTIVE_COPON']==1) echo " checked ";
+                ?>
+                value="1" id="avail" name="<?php
+                $detailinputname = array('name' => "ACTIVE_COPON", 'title' => "فعال");
+                echo base64_encode(Application_Model_Func_Crypt::Encrypt(json_encode($detailinputname)));
+                ?>" placeholder="آیا کوپن فعال می باشد؟">
+            </div>
+        </div>
+
+    
+    <div class="col-xs-10 col-sm-10 col-md-5 col-lg-5">
+            <div class="form-group">
+                <label for="PDecsription">توضیحات</label>
+                <textarea class="form-control" id="PDecsription" name="<?php
+                $detailinputname = array('name' => "DESCRIPTION_COPON", 'title' => "توضیحات کوپن");
+                echo base64_encode(Application_Model_Func_Crypt::Encrypt(json_encode($detailinputname)));
+                ?>" placeholder="توضیحات کوپن را وارد کنید"><?php
+                if (isset($this->Copon)):
+                    echo trim($this->Copon['DESCRIPTION_COPON']);
+                endif;
+                ?></textarea>
+            </div>
+        </div>
+
+</form>
+<script>
+    $(document).ready(function () {
+        $('*[required]').attr('oninvalid', "this.setCustomValidity('این فیلد نباید خالی باشد.')");
+        $('*[required]').attr('oninput', "this.setCustomValidity('')");
+
+    });
+</script>

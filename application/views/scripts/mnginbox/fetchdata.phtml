@@ -1,0 +1,74 @@
+<form id="formstudent" method="post" action="manager/edit" class="form-horizontal">
+    <input type="hidden"  name="code" value="<?php echo $this->datastudent[0]['CODE'] ?>" placeholder="نام">
+    <div class="box-body">
+        <div class="form-group">
+            <label for="inputEmail3" class="col-sm-2 control-label">نام</label>
+            <div class="col-sm-10">
+                <input type="text" readonly="readonly" class="form-control" value="<?php echo $this->datastudent[0]['NAME_FAMILY'] ?>" id="name" placeholder="نام">
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="inputEmail3" class="col-sm-2 control-label">شماره دانشجویی</label>
+            <div class="col-sm-10">
+                <input type="text" readonly="readonly" class="form-control" id="code" value="<?php echo $this->datastudent[0]['CODE'] ?>" placeholder="شماره دانشجویی ">
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="inputEmail3" class="col-sm-2 control-label">کد شناسایی </label>
+            <div class="col-sm-10">
+                <input type="text" name="codecart" onchange="checkvalid(this.value);" class="form-control" id="codecart" value="<?php echo $this->datastudent[0]['CODECART'] ?>" placeholder="کد شناسایی ">
+                <br/>
+                <div id="alertchlval"></div>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="MOBIL" class="col-sm-2 control-label">شماره تماس </label>
+            <div class="col-sm-10">
+                <input type="text" name="MOBIL" class="form-control" id="MOBIL" value="<?php echo $this->datastudent[0]['MOBIL'] ?>" placeholder="شماره تماس ">
+          
+                <br/>         
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="NOTIFICMOBILE" class="col-sm-2 control-label">شماره اطلاع رسانی </label>
+            <div class="col-sm-10">
+                <input type="text" name="NOTIFICMOBILE" class="form-control" id="NOTIFICMOBILE" value="<?php echo $this->datastudent[0]['NOTIFICMOBILE'] ?>" placeholder="شماره تماس برای اطلاع رسانی">
+                <br/>         
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-sm-offset-2 col-sm-10">
+                <div class="checkbox">
+                    <label>
+                        <input type="checkbox" <?php if ($this->datastudent[0]['INDORM']) echo "checked='checked'"; ?> value="1" name="indorm"> ساکن در خوابگاه جواهری
+                    </label>
+                </div>
+            </div>
+        </div>
+<!--        <div class="form-group">
+            <div class="col-sm-offset-2 col-sm-10">
+                <div class="checkbox">
+                    <label>
+                        <input type="checkbox" <?php if ($this->datastudent[0]['WIKEND']) echo "checked='checked'"; ?> value="1" name="wikend"> در مرخصی می باشد؟
+                    </label>
+                </div>
+            </div>
+        </div>-->
+    </div><!-- /.box-body -->
+
+</form>
+<script>
+    function checkvalid(val) {
+        $.ajax({
+            url: "/manager/chkval",
+            method: "POST",
+            data: {codecart: val}
+        })
+                .done(function (html) {
+                    $("#alertchlval").html(html);
+                });
+    }
+  
+
+</script>

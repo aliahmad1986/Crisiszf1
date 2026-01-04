@@ -1,0 +1,144 @@
+<?php
+
+$acl = json_decode(Application_Model_Func_Crypt::Decrypt(base64_decode($this->Group['ACCESS'])), true);
+?>
+
+<form role="form" class="frm" method="POST" action="<?php $this->baseUrl() ?>/User/Mnggroup/Savegroup" id="frmAddGroup">
+    <?php
+    if (isset($this->toolbars)) {
+        ?>
+        <div class="row" style="direction:ltr;margin-bottom: 10px;">
+            <header class="">
+                <div class="animate__animated animate__fadeInDown">
+                    <ul class="nav navbar-nav ">
+
+                        <?php
+                        foreach ($this->toolbars as $keytools => $tools):
+                            ?>
+                            <li class="nav-item">
+                                <?php
+                                echo $tools;
+                                ?>
+                            </li>
+
+                            <?php
+                        endforeach;
+                        ?>
+
+
+                    </ul>
+                </div>
+            </header>
+        </div>
+        <?php
+    }
+    ?>
+    <?php
+    if (isset($this->Group)):
+        ?>
+        <input name="<?php
+        $detailinputname = array('name' => "ID", 'title' => "شماره اختصاصی", 'required' => 1, 'encrypt' => 1);
+        echo base64_encode(Application_Model_Func_Crypt::Encrypt(json_encode($detailinputname)));
+        ?>" type="hidden"
+            value="<?php echo base64_encode(Application_Model_Func_Crypt::Encrypt($this->Group['ID'])) ?>" />
+        <?php
+    endif
+    ?>
+
+    <div class="col-xs-10 col-sm-10 col-md-5 col-lg-5">
+        <div class="form-group">
+            <label for="groupName">نام گروه</label>
+            <input type="text" class="form-control" value="<?php
+            if (isset($this->Group)):
+                echo $this->Group['NAME'];
+            endif;
+            ?>" id="groupName" name="<?php
+            $detailinputname = array('name' => "NAME", 'title' => "نام گروه", 'required' => 1);
+            echo base64_encode(Application_Model_Func_Crypt::Encrypt(json_encode($detailinputname)));
+            ?>" required placeholder="نام گروه را وارد کنید">
+        </div>
+    </div>
+      <div class="col-xs-10 col-sm-10 col-md-5 col-lg-5">
+            <div class="form-group">
+                <label for="ptask">وظیفه گروه <span class="required">*</span></label>
+                <select id='ptask' class="form-control selectpicker" data-allow-clear="1" data-live-search="true" name="<?php
+                $detailinputname = array('name' => "TASK_GROUP", 'title' => "وظیفه ", 'required' => 1, 'encrypt' => 1);
+                echo base64_encode(Application_Model_Func_Crypt::Encrypt(json_encode($detailinputname)));
+                ?>" required placeholder="وظیفه گروه چیست؟؟">
+                   
+                    <?php
+                    $tasks=array(0=>'کاربری سیستم',1=>'تایید سفارشات',2=>'ارسال سفارشات');
+                    foreach ($tasks as $taskid=>$task):
+                        ?>
+                        <option <?php
+                        if($this->Group['TASK_GROUP']==$taskid) echo ' selected ';
+                        ?> value="<?php echo base64_encode(Application_Model_Func_Crypt::Encrypt($taskid));
+                        ?>"><?php echo $task; ?>
+                        </option>
+                        <?php
+                    endforeach;
+                    ?>
+                </select>
+            </div>
+        </div>
+    <div class="form-group">
+        <label for="exampleInputPassword1">سطح دسترسی</label>
+        <div id="accessList">
+            <ul class="checkbox-tree root">
+                <?php foreach ($this->accessList as $moduleName => $access): ?>
+                    <li>
+                        <?php
+                        $modulesEncrypt = base64_encode(Application_Model_Func_Crypt::Encrypt($access['moduleName']));
+                        ?>
+                        <input type="checkbox" value="1" <?php echo $acl['module'][$modulesEncrypt] == 1 ? "checked" : "" ?>
+                            name="<?php
+                            $detailinputname = array('name' => "module", 'title' => "نام دسترسی ماژول ", 'required' => 1);
+                            echo base64_encode(Application_Model_Func_Crypt::Encrypt(json_encode($detailinputname)));
+                            ?>[<?php echo $modulesEncrypt ?>]" />
+                        <label><a onclick="$('#div<?php echo strtolower($access['moduleName']) ?>').toggle()"
+                                style="cursor: pointer;color:blue">
+                                <?php echo $access['title'] ?></a></label>
+                        <div style="display:none;background: aliceblue;"
+                            id="div<?php echo strtolower($access['moduleName']) ?>">
+                            <?php
+                            foreach ($access['controllerList'] as $controllerName => $controllerAccess):
+                                foreach ($controllerAccess['actions'] as $actionName => $action):
+                                    ?>
+                                    <ul>
+                                        <li>
+                                            <?php
+                                            $detail = array('module' => $moduleName, 'controller' => $controllerName, 'action' => $actionName);
+                                            $actionNameCerypted = base64_encode(Application_Model_Func_Crypt::Encrypt(json_encode($detail)));
+                                            ?>
+                                            <input type="checkbox" value="1" <?php echo $this->savedAccessList['action'][$actionNameCerypted] == 1 ? "checked" : "" ?> name="<?php
+                                                      $detailinputname = array('name' => "action", 'title' => "نام دسترسی اکشن ", 'required' => 1);
+                                                      echo base64_encode(Application_Model_Func_Crypt::Encrypt(json_encode($detailinputname)));
+                                                      ?>[<?php echo $actionNameCerypted ?>]" />
+                                            <label><?php echo $action['title']; ?></label>
+                                        </li>
+
+                                    </ul>
+                                    <?php
+                                endforeach;
+                            endforeach;
+                            ?>
+                        </div>
+                    </li>
+                <?php endforeach; ?>
+            </ul>
+
+        </div>
+    </div>
+</form>
+<script>
+    $(document).ready(function () {
+        $('input[required]').attr('oninvalid', "this.setCustomValidity('این فیلد نباید خالی باشد.')");
+        $('input[required]').attr('oninput', "this.setCustomValidity('')");
+        var cbTree = $('.checkbox-tree').checkboxTree({
+            checkChildren: false,
+            singleBranchOpen: false
+        });
+
+    });
+
+</script>

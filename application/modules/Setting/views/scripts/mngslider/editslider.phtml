@@ -1,0 +1,123 @@
+<form role="form" class="frm" method="POST" enctype="multipart/form-data"
+    action="<?php $this->baseUrl() ?>/Setting/Mngslider/Saveslider" id="frmAddslider">
+    <?php
+    if (isset($this->toolbars)) {
+        ?>
+        <div class="row" style="direction:ltr;margin-bottom: 10px;">
+            <header class="">
+                <div class="animate__animated animate__fadeInDown">
+                    <ul class="nav navbar-nav ">
+
+                        <?php
+                        foreach ($this->toolbars as $keytools => $tools):
+                            ?>
+                            <li class="nav-item">
+                                <?php
+                                echo $tools;
+                                ?>
+                            </li>
+
+                            <?php
+                        endforeach;
+                        ?>
+
+
+                    </ul>
+                </div>
+            </header>
+        </div>
+        <?php
+    }
+    ?>
+    <?php
+    if (isset($this->Slider)):
+        ?>
+        <input name="<?php
+        $detailinputname = array('name' => "ID_SLIDER", 'title' => "شماره اختصاصی", 'required' => 1, 'encrypt' => 1);
+        echo base64_encode(Application_Model_Func_Crypt::Encrypt(json_encode($detailinputname)));
+        ?>" type="hidden"
+            value="<?php echo base64_encode(Application_Model_Func_Crypt::Encrypt($this->Slider['ID_SLIDER'])) ?>" />
+        <?php
+    endif
+    ?>
+    <div class="row">
+        <div class="col-xs-10 col-sm-10 col-md-5 col-lg-5">
+            <div class="form-group">
+                <label for="NSlider">عنوان <span class="required">*</span></label>
+                <input type="text" class="form-control" value="<?php
+                if (isset($this->Slider)):
+                    echo $this->Slider['TITLE_SLIDER'];
+                endif;
+                ?>" id="NSlider" name="<?php
+                $detailinputname = array('name' => "TITLE_SLIDER", 'title' => "عنوان", 'required' => 1);
+                echo base64_encode(Application_Model_Func_Crypt::Encrypt(json_encode($detailinputname)));
+                ?>" required='required' placeholder="عنوان نمایشگر را وارد کنید">
+            </div>
+        </div>
+        <div class="col-xs-10 col-sm-10 col-md-5 col-lg-5">
+            <div class="form-group">
+                <label for="product"> محصول <span class="required">*</span></label>
+                <select id='product' class="form-control" name="<?php
+                $detailinputname = array('name' => "PRODUCT", 'title' => "محصول ", 'required' => 1, 'encrypt' => 1);
+                echo base64_encode(Application_Model_Func_Crypt::Encrypt(json_encode($detailinputname)));
+                ?>" required placeholder="محصول  مورد نظر را انتخاب کنید">
+                    <option>
+                    </option>
+                    <?php
+                    foreach ($this->products as $product):
+                        ?>
+                        <option <?php if ($this->Slider['PRODUCT'] == $product['ID_PRODUCT'])
+                            echo " selected "; ?> value="<?php echo base64_encode(Application_Model_Func_Crypt::Encrypt($product['ID_PRODUCT']));
+                               ?>"><?php echo $product['NAME_PRODUCT'] ?></option>
+                        <?php
+                    endforeach;
+                    ?>
+                </select>
+            </div>
+        </div>
+
+        <div class="col-xs-10 col-sm-10 col-md-5 col-lg-5">
+            <div class="form-group">
+                <label for="preview">عکس پیش نمایش </label>
+                <input type="file" class="form-control" id="preview" name="<?php
+                $detailinputname = array(
+                    'name' => "SLIDER",
+                    'title' => "عکس پیش نمایش محصول",
+                    'required' => 0,
+                    'filetype' => array('image/png', 'image/jpeg'),
+                    'volumfile' => '1000000'
+                );
+                echo base64_encode(Application_Model_Func_Crypt::Encrypt(json_encode($detailinputname)));
+                ?>" placeholder="عکس پیش نمایش محصول">
+               
+                    <img style="width:300px" src="<?php echo $this->baseUrl() ?>/img/slider/<?php echo $this->Slider['ID_SLIDER'] ?>/SLIDER.jpg"
+                        onerror="this.src='<?php echo $this->baseUrl() ?>/img/slider.jpg'" />
+               
+         
+        </div>
+
+
+    </div>
+    
+    <div class="col-xs-10 col-sm-10 col-md-5 col-lg-5">
+            <div class="form-group">
+                <label for="PDecsription">متن</label>
+                <textarea class="form-control" id="PDecsription" name="<?php
+                $detailinputname = array('name' => "DESCRIPTION_SLIDER", 'title' => "متن محصول");
+                echo base64_encode(Application_Model_Func_Crypt::Encrypt(json_encode($detailinputname)));
+                ?>" placeholder="متن محصول را وارد کنید"><?php
+                if (isset($this->Slider)):
+                    echo trim($this->Slider['DESCRIPTION_SLIDER']);
+                endif;
+                ?></textarea>
+            </div>
+        </div>
+
+</form>
+<script>
+    $(document).ready(function () {
+        $('*[required]').attr('oninvalid', "this.setCustomValidity('این فیلد نباید خالی باشد.')");
+        $('*[required]').attr('oninput', "this.setCustomValidity('')");
+
+    });
+</script>

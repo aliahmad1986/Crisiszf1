@@ -1,0 +1,151 @@
+
+<div class="modal w-lg fade light blur " id="addUserModal" tabindex="-1" role="dialog"
+    aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog " role="document">
+        <div class="modal-content card shade">
+            <div class="modal-header">
+                <h5 class="modal-title titr" id="exampleModalLabel">افزودن کاربر جدید</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="" id="contentModalAddUser">
+
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn outlined o-danger c-danger" data-dismiss="modal">بستن</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal w-lg fade light blur " id="editUserModal" tabindex="-1" role="dialog"
+    aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog " role="document">
+        <div class="modal-content card shade">
+            <div class="modal-header">
+                <h5 class="modal-title titr" id="exampleModalLabel">ویرایش کاربر</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="" id="contentModalEditUser">
+
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn outlined o-danger c-danger" data-dismiss="modal">بستن</button>
+            </div>
+        </div>
+    </div>
+</div>
+<table class="table table-striped table-bordered datatbl" id="userTbl" style="width:100%">
+    <thead>
+        <tr>
+            <th width="50px">ردیف</th>
+            <th>انتخاب</th>
+            <th>نام نام خانوادگی</th>
+            <th>کد ملی</th>
+            <th>نام کاربری</th>
+            <th>عضو گروه</th>
+            <th>وضعیت</th>
+            <th>ایجاد کننده</th>
+            <th>تاریخ ایجاد</th>
+        </tr>
+    </thead>
+    <tbody>
+
+    </tbody>
+
+</table>
+<script>
+        function deletemodal() {
+        if ($(':radio[name="choiceduser"]').is(':checked')) {
+ 
+            bootbox.confirm({
+                message: "  برای حذف مطمئن هستید؟", locale: 'fa', callback: function (result) {
+                    if (result) {
+                        $.ajax({
+                            url: "/User/Mngusers/deleteuser",
+                            method: "POST",
+                            data: {'<?php
+                  $detailinputname = array ('name' => "ID_USER", 'title' => "انتخاب کاربر", 'required' => 1,'encrypt' => 1);
+                 echo base64_encode(Application_Model_Func_Crypt::Encrypt(json_encode($detailinputname)));
+                ?>': $(':radio[name="choiceduser"]:checked').val() },
+                        })
+                            .done(function (res) {
+                                var result=JSON.parse(res);
+                                if(result.flag){
+                                    toastr.success(result.msg, "عملیات حذف کاربر", { timeOut: 10000 });
+                                    var table = $('#userTbl').DataTable().ajax.reload();
+                                }
+                                else{
+                                    toastr.error(result.msg, "عملیات حذف کاربر", { timeOut: 10000 });
+                                }                       
+
+                            });
+                    }
+                }
+            });
+
+        }
+        else {
+            bootbox.alert({ message: 'کاربر مورد نظر برای حذف را انتخاب کنید', locale: 'fa' });
+        }
+    }
+ 
+    $(document).ready(function () {
+        $('.datatbl').DataTable(
+            {
+                "language":
+                {
+                    url: '/dist/fa.json',
+                },
+                processing: true,
+                serverSide: true,
+                autowidth: false,
+                columns: [
+                    { "width": "80px" },
+                    { "width": "80px" },
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null                    
+                ],
+                
+                ajax: {
+                    url: '<?php echo $this->baseUrl() ?>/User/Mngusers/getuserlist',
+                    error:function(xhr,error,thrown){
+                                    toastr.error('خطا در دریافت اطلاعات پیش آمده است لطفا با پشتیبانی تماس بگیرید.', 'خطا در سمت سرور', { timeOut: 50000 });
+                            }
+                        },
+                paging: true,
+                lengthMenu: [[5, 10, 20, -1], [5, 10, 20, 'همه']],
+            });
+        $('#addUserModal').on('show.bs.modal', function () {
+            GetContent('<?php echo $this->baseUrl() ?>/User/Mngusers/Adduser', '#contentModalAddUser');
+
+        });
+        $('#editUserModal').on('show.bs.modal', function (e) {
+            if ($(':radio[name="choiceduser"]').is(':checked')) {
+                GetContent('<?php echo $this->baseUrl() ?>/User/Mngusers/edituser', '#contentModalEditUser',
+                {'<?php
+                  $detailinputname = array ('name' => "ID_USER", 'title' => "انتخاب کاربر", 'required' => 1,'encrypt'=>1);
+                 echo base64_encode(Application_Model_Func_Crypt::Encrypt(json_encode($detailinputname)));
+                ?>': $(':radio[name="choiceduser"]:checked').val() }
+            );
+            }
+            else {
+                $('#contentModalEditUser').html('<span>کاربر مورد نظر برای ویرایش را انتخاب کنید<span>');
+            }
+
+        });
+    });
+</script>

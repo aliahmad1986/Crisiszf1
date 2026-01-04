@@ -1,0 +1,130 @@
+<!doctype html>
+<html class="no-js" lang="">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title><?php echo $this->translate('welcome'); ?></title>
+    <meta name="description" content="سامانه مدیریت فروشگاهی">
+    <meta name=”robots” content="index, follow">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="apple-touch-icon" sizes="180x180" href="./img/favicon/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="./img/favicon/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="./img/favicon/favicon-16x16.png">
+    <link rel="manifest" href="./img/favicon/site.webmanifest">
+    <link rel="mask-icon" href="./img/favicon/safari-pinned-tab.svg" color="#5bbad5">
+    <meta name="msapplication-TileColor" content="#2b5797">
+    <meta name="theme-color" content="#ffffff">
+    <!-- Place favicon.ico in the root directory -->
+    <link rel="stylesheet" href="css/normalize.css">
+    <link href="./css/fontawsome/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="./css/bootstrap-material-design.min.css">
+    <link rel="stylesheet" href="./css/bootstrap.min.css">
+    <link href="./css/toastr.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="./css/animate.min.css" />
+    <link rel="stylesheet" href="css/main.css">
+</head>
+
+<body class="rtl persianumber">
+
+    <div class="bmd-layout-container bmd-drawer-f-l avam-container animated ">
+        <main class="bmd-layout-content">
+            <div class="container-fluid">
+                <div class="main_wrapper">
+
+
+                    <!-- form -->
+
+                    <div class="row ">
+                        <div class="col-md-4 card shade mw-center mh-center">
+                      
+                            <img src="./svg/tire.svg" alt="..." class="mw-center " height="130" width="300">
+                            <strong class="fnt-code c-primary titr"><?php echo $this->translate('welcome'); ?></strong>
+                            <hr class="hr-dashed m-0">
+                            <form action="/index/login" method="post">
+                                <div class="form-group m-0" style="direction:rtl;text-align:right">
+                                    <label for="username">نام کاربری </label>
+                                    <input type="username" name="usr" class="form-control" id="username"
+                                        aria-describedby="userHelp" placeholder="نام کاربری خود را وارد کنید.">
+                                    <small id="userHelp" class="form-text text-muted" style="color:red !important">
+                                        *نام کاربری و پسورد خود را در اختیار دیگران قرار ندهید*
+                                    </small>
+                                </div>
+                                <div class="form-group m-0" style="direction:rtl;text-align:right">
+                                    <label for="password">
+                                        رمز عبور
+                                    </label>
+                                    <input type="password" class="form-control" name="pwd" id="exampleInputPassword1"
+                                        placeholder="رمز عبور خود را با رعایت نکات ایمنی وارد کنید.">
+                                </div>
+                                <div class="form-check pt-2">
+
+                                </div>
+                                <button type="submit" class="btn shade f-primary btn-block"
+                                    style="text-align:center">ورود با سامانه</button>
+                            </form>
+
+                        </div>
+
+                    </div>
+                    <!--  -->
+
+
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+    </div>
+
+    <script src="js/vendor/modernizr.js"></script>
+    <script src="./js/jquery-3.2.1.min.js"></script>
+    <script>
+        window.jQuery || document.write('<script src="js/vendor/jquery-3.2.1.min.js"><\/script>')
+    </script>
+    <script src="./js/popper.js">
+    </script>
+    <script src="./js/toastr.min.js"></script>
+    <script src="./js/bootstrap-material-design.js">
+    </script>
+    <script>
+        <?php
+        if ($this->error == '1') {
+            ?>
+            toastr.error('اطلاعات را با دقت وارد کنید.', 'خطا در صحت سنجی کاربر', { timeOut: 50000 });
+
+            <?php
+        }
+        if ($this->error == '2') {
+            ?>
+            toastr.error('هشدار امنیتی: زمان استفاده از نرم افزار به پایان رسیده', 'خطا در صحت سنجی کاربر', { timeOut: 5000 });
+
+            <?php
+        }
+        if ($this->error == '3') {
+            ?>
+
+            toastr.error('هشدار امنیتی:شما به این قسمت دسترسی ندارید.', 'خطا در صحت سنجی کاربر', { timeOut: 5000 });
+
+            <?php
+
+        }
+        if ($this->error == '4') {
+            ?>
+
+            toastr.error('هشدار امنیتی:حساب کاربر شما غیر فعال می باشد.', 'خطا در صحت سنجی کاربر', { timeOut: 5000 });
+
+            <?php
+
+        }
+        ?>
+        $(document).ready(function () {
+            $('body').bootstrapMaterialDesign();
+        });
+    </script>
+
+
+</body>
+
+</html>

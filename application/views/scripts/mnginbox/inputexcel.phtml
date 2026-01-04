@@ -1,0 +1,66 @@
+<!-- Content Wrapper. Contains page content -->
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+        <h1>
+
+            <small>ورود اطلاعات دانشجو</small>
+        </h1>
+        <ol class="breadcrumb">
+            <li><a href="<?php $this->baseUrl() ?>/dashboard"><i class="fa fa-dashboard"></i> خانه</a></li>
+        </ol>
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+
+        <!-- Main row -->
+        <div class="row"> 
+            <section class="col-lg-12 connectedSortable">
+                <div class="col-lg-12">
+                    <label for="formFileSm" class="form-label">برای ورود اطلاعات دانشجویان فایل اکسل اطلاعات دانشجویان را در این قسمت وارد کنید  و بر روی ارسال کلیک کنید:</label>
+                </div>
+                <div class="col-lg-12">
+                    <div class="col-lg-6">
+                        <div class="input-group">
+                            <form  id="formfile" enctype="multipart/form-data" target="loadarea_show"
+                                   method="post" action="<?php $this->baseUrl() ?>/manager/insertexcel">
+                                <input class="form-control form-control-sm" name="fileexcel" id="formFileSm" type="file">  
+                            </form>
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+
+                        <div class="input-group">
+
+                            <div class="input-btn">
+
+                                <button type="button"  onclick="loadstudata()" class="btn btn-warning">ارسال</button>
+                            </div><!-- /btn-group -->
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-12">
+                    <div class="col-md-12 cst-md" style="margin: 10px">                        
+                        <div id="progressbar" style="border:1px solid black; border-radius: 6px; "></div>
+                        <br>
+                        <div id="informations" class="cst-md"></div>
+                         <br>
+                         <div id="noticDiv" style="height: 200px;overflow: auto" class="cst-md"></div>
+                    </div>
+                </div>
+            </section><!-- right col -->
+        </div><!-- /.row (main row) -->
+
+    </section><!-- /.content -->
+</div><!-- /.content-wrapper -->
+<iframe id="loadarea_show" name="loadarea_show" class="cst-md" style="display: none"></iframe>
+<script>
+    function loadstudata() {
+         document.getElementById('formfile').submit();
+       // alert($('#formfile').serialize());
+     document.getElementById("informations").innerHTML = "<div style=\"text - align:center; font - weight:bold\">در حال ارسال فایل و انجام عملیات</div>";
+      //  document.getElementById('loadarea_show').src = '<?php $this->baseUrl() ?>/manager/insertexcel?' + $('#formfile').serialize();
+    }
+</script>

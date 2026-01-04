@@ -1,0 +1,293 @@
+<!doctype html>
+<html class="no-js" lang="">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="x-ua-compatible" content="ie=edge">
+	<title>سامانه مدیریت فروشگاهی</title>
+	<meta name="google-site-verification" content="kk5Fdpx355TSI9qMxCMUXQ9bBhFZu0DveMlcV-H1Qzk" />
+	<meta name="description" content="nozha admin panel fully support rtl with complete dark mode css to use. ">
+	<meta name=”robots” content="index, follow">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="apple-touch-icon" sizes="180x180" href="./img/favicon/apple-touch-icon.png">
+	<link rel="icon" type="image/png" sizes="32x32" href="./img/favicon/favicon-32x32.png">
+	<link rel="icon" type="image/png" sizes="16x16" href="./img/favicon/favicon-16x16.png">
+	<link rel="manifest" href="./img/favicon/site.webmanifest">
+	<link rel="mask-icon" href="./img/favicon/safari-pinned-tab.svg" color="#5bbad5">
+	<meta name="msapplication-TileColor" content="#2b5797">
+	<meta name="theme-color" content="#ffffff">
+	<!-- Place favicon.ico in the root directory -->
+	<link rel="stylesheet" href="css/normalize.css">
+	<link href="./css/fontawsome/all.min.css" rel="stylesheet">
+	<link rel="stylesheet"
+		href="./css/bootstrap-material-design.min.css">
+
+	<link rel="stylesheet" href="./css/bootstrap.min.css">
+	<link href="./css/toastr.min.css" rel="stylesheet" />
+
+	<link rel="stylesheet" href="./css/animate.min.css" />
+	<link rel="stylesheet" href="css/main.css">
+</head>
+
+<body class="rtl persianumber">
+
+	<div class="bmd-layout-container bmd-drawer-f-l avam-container animated bmd-drawer-in">
+		<header class="bmd-layout-header ">
+			<div class="navbar navbar-light bg-faded animate__animated animate__fadeInDown">
+				<button class="navbar-toggler animate__animated animate__wobble animate__delay-2s" type="button"
+					data-toggle="drawer" data-target="#dw-s1">
+					<span class="navbar-toggler-icon"></span>
+					<!-- <i class="material-Animation">menu</i> -->
+				</button>
+				<ul class="nav navbar-nav ">
+					<li class="nav-item">
+						<div class="dropdown">
+							<button class="btn  dropdown-toggle  m-0" type="button" id="dropdownMenu2"
+								data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+								<i class="far fa-envelope fa-lg"></i><span
+									class="badge badge-pill badge-danger animate__animated animate__flash animate__repeat-3 animate__slower animate__delay-2s">5</span>
+							</button>
+							<div aria-labelledby="dropdownMenu2"
+								class="dropdown-menu dropdown-menu-right dropdown-menu dropdown-menu-right-lg">
+								<span class="dropdown-item dropdown-header">15 Notifications</span>
+								<div class="dropdown-divider"></div>
+								<a href="#" class="dropdown-item">
+									<i class="far fa-envelope c-main mr-2"></i> 4 new messages
+									<span class="float-right-rtl text-muted text-sm">3 mins</span>
+								</a>
+								<div class="dropdown-divider"></div>
+								<a href="#" class="dropdown-item">
+									<i class="far fa-user c-main mr-2"></i> 8 friend requests
+									<span class="float-right-rtl text-muted text-sm">12 hours</span>
+								</a>
+								<div class="dropdown-divider"></div>
+								<a href="#" class="dropdown-item">
+									<i class="far fa-file c-main mr-2"></i> 3 new reports
+									<span class="float-right-rtl text-muted text-sm">2 days</span>
+								</a>
+								<div class="dropdown-divider"></div>
+								<a href="#" class="dropdown-item dropdown-footer">See All Notifications</a>
+							</div>
+						</div>
+					</li>
+					<li class="nav-item">
+						<div class="dropdown">
+							<button class="btn  dropdown-toggle m-0" type="button" id="dropdownMenu3"
+								data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+								<i class="far fa-bell  fa-lg "></i><span
+									class="badge badge-pill badge-warning animate__animated animate__flash animate__repeat-3 animate__slower animate__delay-2s">5</span>
+							</button>
+							<div aria-labelledby="dropdownMenu2"
+								class="dropdown-menu dropdown-menu-right dropdown-menu dropdown-menu-right-lg">
+								<span class="dropdown-item dropdown-header">15 Notifications</span>
+								<div class="dropdown-divider"></div>
+								<a href="#" class="dropdown-item">
+									<i class="far fa-envelope c-main mr-2"></i> 4 new messages
+									<span class="float-right-rtl text-muted text-sm">3 mins</span>
+								</a>
+								<div class="dropdown-divider"></div>
+								<a href="#" class="dropdown-item">
+									<i class="far fa-user c-main mr-2"></i> 8 friend requests
+									<span class="float-right-rtl text-muted text-sm">12 hours</span>
+								</a>
+								<div class="dropdown-divider"></div>
+								<a href="#" class="dropdown-item">
+									<i class="far fa-file c-main mr-2"></i> 3 new reports
+									<span class="float-right-rtl text-muted text-sm">2 days</span>
+								</a>
+								<div class="dropdown-divider"></div>
+								<a href="#" class="dropdown-item dropdown-footer">See All Notifications</a>
+							</div>
+						</div>
+					</li>
+					<li class="nav-item"> <img src="./img/user-profile.jpg" alt="..."
+							class="rounded-circle screen-user-profile"></li>
+					<li class="nav-item">
+						<div class="dropdown">
+							<button class="btn  dropdown-toggle m-0" type="button" id="dropdownMenu4"
+								data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+								علی احمد میرزایی
+							</button>
+							<div aria-labelledby="dropdownMenu4"
+								class="dropdown-menu dropdown-menu-right dropdown-menu dropdown-menu-right"
+								aria-labelledby="dropdownMenu2">
+								<button class="dropdown-item" type="button"><i
+										class="far fa-user fa-sm c-main mr-2"></i>Profile</button>
+								<button onclick="dark()" class="dropdown-item" type="button"><i
+										class="fas fa-moon fa-sm c-main mr-2"></i>Dark Mode</button>
+								<button class="dropdown-item" type="button"><i
+										class="fas fa-cog fa-sm c-main mr-2"></i>Setting</button>
+								<button class="dropdown-item" type="button"><i
+										class="fas fa-sign-out-alt c-main fa-sm mr-2"></i>Sign Out</button>
+							</div>
+						</div>
+					</li>
+
+
+
+
+				</ul>
+			</div>
+		</header>
+		<div id="dw-s1" class="bmd-layout-drawer bg-faded">
+
+			<div class="container-fluid side-bar-container">
+				<header class="pb-0">
+					<a class="navbar-brand">
+						<object class="side-logo" data="./svg/tire.svg" type="image/svg+xml">
+						</object>
+					</a>
+				</header>
+				<p class="side-comment">منوی دسترسی</p>
+				
+				<ul class="side a-collapse short ">
+					<a class="ul-text"><i class="fas fa-tachometer-alt mr-1"></i> مدیریت کاربران
+						<!-- <span class="badge badge-info">4</span> -->
+						<i class="fas fa-chevron-down arrow"></i></a>
+					<div class="side-item-container ">
+						<li class="side-item"><a href="./group.html"><i class="fas fa-angle-right mr-2"></i>گروه</a>
+						</li>
+						<li class="side-item"><a href="./usermng.html"><i class="fas fa-angle-right mr-2"></i>کاربران</a>
+						</li>
+						<li class="side-item"><a href="./accesslist.html"><i class="fas fa-angle-right mr-2"></i> سطوح دسترسی
+								</a>
+						</li>
+						
+					</div>
+				</ul>
+
+				<ul class="side a-collapse short">
+					<a class="ul-text"><i class="fas fa-cog mr-1"></i> کارتابل
+						<!-- <span	class="badge badge-success">4</span> -->
+						<i class="fas fas fa-chevron-down arrow"></i></a>
+					<div class="side-item-container hide animated">
+						<li class="side-item"><a href="./inbox.html"><i class="fas fa-angle-right mr-2"></i>وارده</a></li>
+						<li class="side-item"><a href="./"><i class="fas fa-angle-right mr-2"></i>صادره</a></li>
+						<li class="side-item"><a href="./"><i class="fas fa-angle-right mr-2"></i>پیش نویس</a></li>
+					
+					</div>
+				</ul>
+			
+
+
+
+			</div>
+
+		</div>
+		<main class="bmd-layout-content">
+			<div class="container-fluid ">
+
+				<!-- content -->
+				<!-- breadcrumb -->
+
+				<div class="row  m-1 pb-4 mb-3 ">
+					<div class="col-xs-12  col-sm-12  col-md-12  col-lg-12 p-2">
+						<div class="page-header breadcrumb-header ">
+							<div class="row align-items-end ">
+								<div class="col-lg-8">
+									<div class="page-header-title text-left-rtl">
+										<div class="d-inline">
+											<h3 class="lite-text ">داشبورد</h3>
+											<span class="lite-text text-gray">بررسی درخواست ها</span>
+										</div>
+									</div>
+								</div>
+								<div class="col-lg-4">
+									<ol class="breadcrumb float-sm-right">
+										<li class="breadcrumb-item "><a href="#"><i class="fas fa-home"></i></a></li>
+										<li class="breadcrumb-item active">داشبورد</li>
+									</ol>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+
+			  <div class="row mb-2">
+                    <div class="col-xl-3 col-md-6 col-sm-6 p-2">
+                        <div class="box-dash animate__animated animate__flipInY b-first  "><i
+                                class="fab far fa-chart-bar" aria-hidden="true"></i>
+
+                            <span>۳۰%</span>
+                            <hr class="m-0 ">
+                            <span>نرخ فروش</span>
+                            <a href="#" class="small-box-footer">بیشتر <i class="fas fa-arrow-circle-right"></i></a>
+                        </div>
+                    </div>
+                    <div class="col-xl-3 col-md-6 col-sm-6 p-2">
+                        <div class="box-dash animate__animated animate__flipInY b-second   "><i class="fab far fa-clock"
+                                aria-hidden="true"></i>
+
+                            <span>۳</span>
+                            <hr class="m-0 ">
+                            <span>برنامه هفتگی</span>
+                            <a href="#" class="small-box-footer"> بیشتر<i class="fas fa-arrow-circle-right"></i></a>
+                        </div>
+                    </div>
+                    <div class="col-xl-3 col-md-6 col-sm-6 p-2">
+                        <div class="box-dash animate__animated animate__flipInY b-third  "><i
+                                class="fab far fa-comments" aria-hidden="true"></i>
+
+                            <span>۲۷</span>
+                            <hr class="m-0 ">
+                            <span>درخواست های دریافتی</span>
+                            <a href="#" class="small-box-footer">بیشتر <i class="fas fa-arrow-circle-right"></i></a>
+                        </div>
+                    </div>
+                    <div class="col-xl-3 col-md-6 col-sm-6 p-2">
+                        <div class="box-dash animate__animated animate__flipInY b-forth  "><i class="fab far fa-gem"
+                                aria-hidden="true"></i>
+
+                            <span>۲</span>
+                            <hr class="m-0 ">
+                            <span>هشدار</span>
+                            <a href="#" class="small-box-footer">بیشتر <i class="fas fa-arrow-circle-right"></i></a>
+                        </div>
+                    </div>
+                </div>
+               
+				<div class="row m-1">
+					<div class="col-xs-1 col-sm-1 col-md-8 col-lg-8 p-2">
+						<div class="card shade h-100">
+							<div class="card-body">
+								<h5 class="card-title">نمودار فروش   </h5>
+
+								<hr>
+								<canvas id="myChart5"></canvas>
+								<hr class="hr-dashed">
+								<p class="text-center c-danger">سال 1402</p>
+							</div>
+
+						</div>
+					</div>			
+				</div>
+
+			</div>
+		</main>
+	</div>
+
+	</div>
+
+
+
+	<script src="js/vendor/modernizr.js"></script>
+	<script src="./js/jquery-3.2.1.min.js"></script>
+	<script>
+		window.jQuery || document.write('<script src="js/vendor/jquery-3.2.1.min.js"><\/script>')
+	</script>
+	<script src="./js/popper.js">
+	</script>
+	<script src="./js/toastr.min.js"></script>
+	<script src="./js/bootstrap-material-design.js">
+	</script>
+	<script src="./js/chart.js"></script>
+	<script>
+		$(document).ready(function () {
+			$('body').bootstrapMaterialDesign();
+		});
+	</script>
+
+	<script src="js/main.js"></script>
+
+</body>
+
+</html>

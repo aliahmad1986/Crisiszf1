@@ -1,0 +1,151 @@
+
+<div class="modal w-lg fade light blur " id="addCustomerModal" tabindex="-1" role="dialog"
+    aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog " role="document">
+        <div class="modal-content card shade">
+            <div class="modal-header">
+                <h5 class="modal-title titr" id="exampleModalLabel">افزودن مشتری جدید</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="" id="contentModalAddCustomer">
+
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn outlined o-danger c-danger" data-dismiss="modal">بستن</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal w-lg fade light blur " id="editCustomerModal" tabindex="-1" role="dialog"
+    aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog " role="document">
+        <div class="modal-content card shade">
+            <div class="modal-header">
+                <h5 class="modal-title titr" id="exampleModalLabel">ویرایش مشتری</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="" id="contentModalEditCustomer">
+
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn outlined o-danger c-danger" data-dismiss="modal">بستن</button>
+            </div>
+        </div>
+    </div>
+</div>
+<table class="table table-striped table-bordered datatbl" id="customerTbl" style="width:100%">
+    <thead>
+        <tr>
+            <th width="50px">ردیف</th>
+            <th>انتخاب</th>
+            <th>نام نام خانوادگی</th>
+            <th>کد ملی</th>
+            <th>نام کاربری مشتریی</th>
+            <th>عضو گروه</th>
+            <th>وضعیت</th>
+            <th>ایجاد کننده</th>
+            <th>تاریخ ایجاد</th>
+        </tr>
+    </thead>
+    <tbody>
+
+    </tbody>
+
+</table>
+<script>
+        function deletemodal() {
+        if ($(':radio[name="choicedcustomer"]').is(':checked')) {
+ 
+            bootbox.confirm({
+                message: "  برای حذف مطمئن هستید؟", locale: 'fa', callback: function (result) {
+                    if (result) {
+                        $.ajax({
+                            url: "/User/Mngcustomer/deletecustomer",
+                            method: "POST",
+                            data: {'<?php
+                  $detailinputname = array ('name' => "ID_CUSTOMER", 'title' => "انتخاب مشتری", 'required' => 1,'encrypt' => 1);
+                 echo base64_encode(Application_Model_Func_Crypt::Encrypt(json_encode($detailinputname)));
+                ?>': $(':radio[name="choicedcustomer"]:checked').val() },
+                        })
+                            .done(function (res) {
+                                var result=JSON.parse(res);
+                                if(result.flag){
+                                    toastr.success(result.msg, "عملیات حذف مشتری", { timeOut: 10000 });
+                                    var table = $('#customerTbl').DataTable().ajax.reload();
+                                }
+                                else{
+                                    toastr.error(result.msg, "عملیات حذف مشتری", { timeOut: 10000 });
+                                }                       
+
+                            });
+                    }
+                }
+            });
+
+        }
+        else {
+            bootbox.alert({ message: 'مشتری مورد نظر برای حذف را انتخاب کنید', locale: 'fa' });
+        }
+    }
+ 
+    $(document).ready(function () {
+        $('.datatbl').DataTable(
+            {
+                "language":
+                {
+                    url: '/dist/fa.json',
+                },
+                processing: true,
+                serverSide: true,
+                autowidth: false,
+                columns: [
+                    { "width": "80px" },
+                    { "width": "80px" },
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null                    
+                ],
+                
+                ajax: {
+                    url: '<?php echo $this->baseUrl() ?>/User/Mngcustomer/getcustomerlist',
+                    error:function(xhr,error,thrown){
+                                    toastr.error('خطا در دریافت اطلاعات پیش آمده است لطفا با پشتیبانی تماس بگیرید.', 'خطا در سمت سرور', { timeOut: 50000 });
+                            }
+                        },
+                paging: true,
+                lengthMenu: [[5, 10, 20, -1], [5, 10, 20, 'همه']],
+            });
+        $('#addCustomerModal').on('show.bs.modal', function () {
+            GetContent('<?php echo $this->baseUrl() ?>/User/Mngcustomer/Addcustomer', '#contentModalAddCustomer');
+
+        });
+        $('#editCustomerModal').on('show.bs.modal', function (e) {
+            if ($(':radio[name="choicedcustomer"]').is(':checked')) {
+                GetContent('<?php echo $this->baseUrl() ?>/User/Mngcustomer/editcustomer', '#contentModalEditCustomer',
+                {'<?php
+                  $detailinputname = array ('name' => "ID_CUSTOMER", 'title' => "انتخاب مشتری", 'required' => 1,'encrypt'=>1);
+                 echo base64_encode(Application_Model_Func_Crypt::Encrypt(json_encode($detailinputname)));
+                ?>': $(':radio[name="choicedcustomer"]:checked').val() }
+            );
+            }
+            else {
+                $('#contentModalEditCustomer').html('<span>مشتری مورد نظر برای ویرایش را انتخاب کنید<span>');
+            }
+
+        });
+    });
+</script>

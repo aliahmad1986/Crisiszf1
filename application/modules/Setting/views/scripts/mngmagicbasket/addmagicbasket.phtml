@@ -1,0 +1,86 @@
+<form role="form" class="frm" method="POST" enctype="multipart/form-data"
+    action="<?php $this->baseUrl() ?>/Setting/Mngmagicbasket/Savemagicbasket" id="frmAddmagicbasket">
+    <?php
+    if (isset($this->toolbars)) {
+        ?>
+        <div class="row" style="direction:ltr;margin-bottom: 10px;">
+            <header class="">
+                <div class="animate__animated animate__fadeInDown">
+                    <ul class="nav navbar-nav ">
+
+                        <?php
+                        foreach ($this->toolbars as $keytools => $tools):
+                            ?>
+                            <li class="nav-item">
+                                <?php
+                                echo $tools;
+                                ?>
+                            </li>
+
+                            <?php
+                        endforeach;
+                        ?>
+
+
+                    </ul>
+                </div>
+            </header>
+        </div>
+        <?php
+    }
+    ?>
+    <?php
+    if (isset($this->Magicbasket)):
+        ?>
+        <input name="<?php
+        $detailinputname = array('name' => "ID_MAGICBASKET", 'title' => "شماره اختصاصی", 'required' => 1, 'encrypt' => 1);
+        echo base64_encode(Application_Model_Func_Crypt::Encrypt(json_encode($detailinputname)));
+        ?>" type="hidden"
+            value="<?php echo base64_encode(Application_Model_Func_Crypt::Encrypt($this->Magicbasket['ID_MAGICBASKET'])) ?>" />
+        <?php
+    endif
+    ?>
+    <div class="row">
+    <div class="col-xs-10 col-sm-10 col-md-5 col-lg-5">
+            <div class="form-group">
+                <label for="product"> محصول <span class="required">*</span></label>
+                <select id='product' class="form-control" name="<?php
+                $detailinputname = array('name' => "PRODUCT", 'title' => "محصول ", 'required' => 1, 'encrypt' => 1);
+                echo base64_encode(Application_Model_Func_Crypt::Encrypt(json_encode($detailinputname)));
+                ?>" required placeholder="محصول  مورد نظر را انتخاب کنید">
+                    <option>
+                    </option>
+                    <?php
+                    foreach ($this->products as $product):
+                        ?>
+                        <option <?php if ($this->Magicbasket['PRODUCT'] == $product['ID_PRODUCT'])
+                            echo " selected "; ?> value="<?php echo base64_encode(Application_Model_Func_Crypt::Encrypt($product['ID_PRODUCT']));
+                               ?>"><?php echo $product['NAME_PRODUCT'] ?></option>
+                        <?php
+                    endforeach;
+                    ?>
+                </select>
+            </div>
+        </div>    
+    <div class="col-xs-10 col-sm-10 col-md-5 col-lg-5">
+            <div class="form-group">
+                <label for="PDecsription">توضیحات</label>
+                <textarea class="form-control" id="PDecsription" name="<?php
+                $detailinputname = array('name' => "DESCRIPTION_MAGICBASKET", 'title' => "توضیحات سبد شگفت انگیز");
+                echo base64_encode(Application_Model_Func_Crypt::Encrypt(json_encode($detailinputname)));
+                ?>" placeholder="توضیحات سبد شگفت انگیز را وارد کنید"><?php
+                if (isset($this->Magicbasket)):
+                    echo trim($this->Magicbasket['DESCRIPTION_MAGICBASKET']);
+                endif;
+                ?></textarea>
+            </div>
+        </div>
+
+</form>
+<script>
+    $(document).ready(function () {
+        $('*[required]').attr('oninvalid', "this.setCustomValidity('این فیلد نباید خالی باشد.')");
+        $('*[required]').attr('oninput', "this.setCustomValidity('')");
+
+    });
+</script>

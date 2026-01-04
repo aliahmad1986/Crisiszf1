@@ -1,0 +1,162 @@
+<form role="form" class="frm" method="POST" action="<?php $this->baseUrl() ?>/User/Mngusers/saveuser" id="frmAddUsers">
+    <?php
+    if (isset($this->toolbars)) {
+        ?>
+        <div class="row" style="direction:ltr;margin-bottom: 10px;">
+            <header class="">
+                <div class="animate__animated animate__fadeInDown">
+                    <ul class="nav navbar-nav ">
+
+                        <?php
+                        foreach ($this->toolbars as $keytools => $tools):
+                            ?>
+                            <li class="nav-item">
+                                <?php
+                                echo $tools;
+                                ?>
+                            </li>
+
+                            <?php
+                        endforeach;
+                        ?>
+
+
+                    </ul>
+                </div>
+            </header>
+        </div>
+        <?php
+    }
+    ?>
+    <?php
+    if (isset($this->USER)):
+        ?>
+        <input name="<?php
+        $detailinputname = array('name' => "ID_USER", 'title' => "شماره اختصاصی", 'required' => 1, 'encrypt' => 1);
+        echo base64_encode(Application_Model_Func_Crypt::Encrypt(json_encode($detailinputname)));
+        ?>" type="hidden"
+            value="<?php echo base64_encode(Application_Model_Func_Crypt::Encrypt($this->USER['ID_USER'])) ?>" />
+        <?php
+    endif
+    ?>
+    <div class="row">
+        <div class="col-xs-10 col-sm-10 col-md-5 col-lg-5">
+            <div class="form-group">
+                <label for="pid">مشخصات فردی<span class="required">*</span></label>
+                <select id='pid' class="form-control" name="<?php
+                $detailinputname = array('name' => "PERSONID", 'title' => "مشخصات فردی", 'required' => 1, 'encrypt' => 1);
+                echo base64_encode(Application_Model_Func_Crypt::Encrypt(json_encode($detailinputname)));
+                ?>" required placeholder="مالک این حساب کاربری کیست نام و نام خانوادگی؟؟">
+                    <option>
+    </option>
+                        <?php
+                        foreach ($this->persons as $person):
+                            ?>
+                        <option <?php
+                        if ($person['ID_PERSON'] == $this->USER['PERSONID']) {
+                            echo " selected ";
+                        }
+                        ?> value="<?php echo base64_encode(Application_Model_Func_Crypt::Encrypt($person['ID_PERSON']));
+                         ?>"><?php echo $person['NAME_PERSON'] . ' ' . $person['FAMIL'] . ' ' . $person['CODEMELI'] ?>
+                        </option>
+                        <?php
+                        endforeach;
+                        ?>
+                </select>
+            </div>
+        </div>
+        <div class="col-xs-10 col-sm-10 col-md-5 col-lg-5">
+            <div class="form-group">
+                <label for="pidcompany">مشخصات شرکت<span class="required">*</span></label>
+                <select id='pidcompany' class="form-control" name="<?php
+                $detailinputname = array('name' => "COMPANYID", 'title' => "مشخصات شرکت", 'required' => 1, 'encrypt' => 1);
+                echo base64_encode(Application_Model_Func_Crypt::Encrypt(json_encode($detailinputname)));
+                ?>" required placeholder="این حساب کاربری متعلق به چه شرکتی است؟">
+                    <option>
+                    </option>
+                    <?php
+                    foreach ($this->companys as $company):
+                        ?>
+                        <option <?php
+                        if ($company['ID_COMPANY'] == $this->USER['COMPANYID']) {
+                            echo " selected ";
+                        }
+                        ?> value="<?php echo base64_encode(Application_Model_Func_Crypt::Encrypt($company['ID_COMPANY']));
+                         ?>"><?php echo $company['NAME_COMPANY'] . ' ' . $company['CODEMELI'] ?>
+                        </option>
+                        <?php
+                    endforeach;
+                    ?>
+                </select>
+            </div>
+        </div>
+        <div class="col-xs-10 col-sm-10 col-md-5 col-lg-5">
+            <div class="form-group">
+                <label for="usr">نام کاربری <span class="required">*</span></label>
+                <input type="text" class="form-control" value="<?php
+                if (isset($this->USER)):
+                    echo $this->USER['USERNAME'];
+                endif;
+                ?>" id="usr" name="<?php
+                $detailinputname = array('name' => "USERNAME", 'title' => "نام کاربری", 'required' => 1);
+                echo base64_encode(Application_Model_Func_Crypt::Encrypt(json_encode($detailinputname)));
+                ?>" required='required' placeholder="نام کاربری را وارد کنید">
+            </div>
+        </div>
+        <div class="col-xs-10 col-sm-10 col-md-5 col-lg-5">
+            <div class="form-group">
+                <label for="pwd">رمز عبور <span class="required">*</span></label>
+                <input type="password" class="form-control" value="<?php
+                if (isset($this->USER)):
+                    echo Application_Model_Func_Crypt::Decrypt(base64_decode($this->USER['PASSWORD']));
+                endif;
+                ?>" id="pwd" name="<?php
+                $detailinputname = array('name' => "PASSWORD", 'title' => "رمز عبور", 'required' => 1);
+                echo base64_encode(Application_Model_Func_Crypt::Encrypt(json_encode($detailinputname)));
+                ?>" required='required' placeholder="رمز عبور را وارد کنید">
+            </div>
+        </div>
+        <div class="col-xs-10 col-sm-10 col-md-5 col-lg-5">
+            <div class="form-group">
+                <label for="gid">عضو گروه<span class="required">*</span></label>
+                <select id='gid' class="form-control" name="<?php
+                $detailinputname = array('name' => "ACL", 'title' => "گروه", 'required' => 1, 'encrypt' => 1);
+                echo base64_encode(Application_Model_Func_Crypt::Encrypt(json_encode($detailinputname)));
+                ?>" required placeholder="عضو چه گروهی می باشد">
+                    <option>
+                    </option>
+                    <?php
+                    foreach ($this->groups as $group):
+                        ?>
+                        <option <?php
+                        if ($group['ID'] == $this->USER['ACL']) {
+                            echo " selected ";
+                        }
+                        ?> value="<?php echo base64_encode(Application_Model_Func_Crypt::Encrypt($group['ID']));
+                         ?>"><?php echo $group['NAME'] ?></option>
+                        <?php
+                    endforeach;
+                    ?>
+                </select>
+            </div>
+        </div>
+        <div class="col-xs-10 col-sm-10 col-md-5 col-lg-5">
+            <div class="form-group">
+                <label for="status">وضعیت فعال/غیر فعال <span class="required">*</span></label>
+                <input type="checkbox" class="" <?php 
+                if($this->USER['ACTIVE']==1) echo " checked ";
+                ?> value="1" id="status" name="<?php
+                $detailinputname = array('name' => "ACTIVE", 'title' => "فعال");
+                echo base64_encode(Application_Model_Func_Crypt::Encrypt(json_encode($detailinputname)));
+                ?>" placeholder="آیا کاربری فعال می باشد؟">
+            </div>
+        </div>
+    </div>
+</form>
+<script>
+    $(document).ready(function () {
+        $('*[required]').attr('oninvalid', "this.setCustomValidity('این فیلد نباید خالی باشد.')");
+        $('*[required]').attr('oninput', "this.setCustomValidity('')");
+
+    });
+</script>

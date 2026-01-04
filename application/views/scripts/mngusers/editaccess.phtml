@@ -1,0 +1,61 @@
+
+<link rel="stylesheet/less" href="/dist/checkboxtree//bootstrap-checkbox-tree.less" type="text/css" />
+
+<script type="text/javascript" src="/dist/checkboxtree/bootstrap-checkbox-tree.js"></script>
+<script type="text/javascript">
+
+    jQuery(document).ready(function () {
+        var cbTree = $('.checkbox-tree').checkboxTree({
+            checkChildren: true,
+            singleBranchOpen: true
+        });
+
+
+    });
+
+</script>
+
+<div class="container">
+    <div class="page-header"><h1>تعیین سطح دسترسی کاربران</h1></div>
+    <div class="row">
+        <div class="span8">
+            <form id="formuser" action="saveaccess" method="post" class="">
+                <input type="hidden" name="userid" value="<?php echo $this->userid ?>"/>
+                <ul class="checkbox-tree root">
+                    <?php foreach ($this->accessList as $access): ?>
+                        <li>
+                            <input type="checkbox" <?php
+                                        if($this->acls[$access['controller'].'_init']==1):
+                                            echo "checked='checked'";
+                                        endif;
+                                        
+                                        ?> value="1" name="accesschk[<?php echo $access['controller'] ?>_init]" />
+                            <label><?php echo $access['title'] ?></label>
+                            <?php
+                            foreach ($access['actions'] as $action):
+                                ?>
+                                <ul class="manu">
+                                    <li>
+                                        <input type="checkbox" value="1" <?php
+                                        if($this->acls[$access['controller'].'_'.$action['action']]==1):
+                                            echo "checked='checked'";
+                                        endif;
+                                        
+                                        ?> name="accesschk[<?php echo $access['controller'] ?>_<?php echo $action['action'] ?>]" />
+                                        <label><?php echo $action['title'] ?></label>
+                                    </li>
+
+                                </ul>
+                                <?php
+                            endforeach;
+                            ?>
+                        </li>
+                    <?php endforeach; ?>
+                </ul>
+            </form> 
+
+        </div>
+    </div>
+
+
+</div>

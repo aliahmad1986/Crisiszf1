@@ -1,0 +1,168 @@
+<form role="form" class="frm" method="POST" enctype="multipart/form-data"
+    action="<?php $this->baseUrl() ?>/Setting/Mngcar/Savecar" id="frmAddcar">
+    <?php
+    if (isset($this->toolbars)) {
+        ?>
+        <div class="row" style="direction:ltr;margin-bottom: 10px;">
+            <header class="">
+                <div class="animate__animated animate__fadeInDown">
+                    <ul class="nav navbar-nav ">
+
+                        <?php
+                        foreach ($this->toolbars as $keytools => $tools):
+                            ?>
+                            <li class="nav-item">
+                                <?php
+                                echo $tools;
+                                ?>
+                            </li>
+
+                            <?php
+                        endforeach;
+                        ?>
+
+
+                    </ul>
+                </div>
+            </header>
+        </div>
+        <?php
+    }
+    ?>
+    <?php
+    if (isset($this->Car)):
+        ?>
+        <input name="<?php
+        $detailinputname = array('name' => "ID_CARGROUP", 'title' => "شماره اختصاصی", 'required' => 1, 'encrypt' => 1);
+        echo base64_encode(Application_Model_Func_Crypt::Encrypt(json_encode($detailinputname)));
+        ?>" type="hidden"
+            value="<?php echo base64_encode(Application_Model_Func_Crypt::Encrypt($this->Car['ID_CARGROUP'])) ?>" />
+        <?php
+    endif
+    ?>
+    <div class="row">
+        <div class="col-xs-10 col-sm-10 col-md-5 col-lg-5">
+            <div class="form-group">
+                <label for="NCar">عنوان <span class="required">*</span></label>
+                <input type="text" class="form-control" value="<?php
+                if (isset($this->Car)):
+                    echo $this->Car['NAME_CARGROUP'];
+                endif;
+                ?>" id="NCar" name="<?php
+                $detailinputname = array('name' => "NAME_CARGROUP", 'title' => "عنوان", 'required' => 1);
+                echo base64_encode(Application_Model_Func_Crypt::Encrypt(json_encode($detailinputname)));
+                ?>" required='required' placeholder="عنوان گروه خودرویی را وارد کنید">
+            </div>
+        </div>
+        <div class="col-xs-10 col-sm-10 col-md-5 col-lg-5">
+            <div class="form-group">
+                <label for="group"> گروه <span class="required">*</span></label>
+                <select id='group' class="form-control" name="<?php
+                $detailinputname = array('name' => "GROUP_CARGROUP", 'title' => "گروه ", 'required' => 1, 'encrypt' => 1);
+                echo base64_encode(Application_Model_Func_Crypt::Encrypt(json_encode($detailinputname)));
+                ?>" required placeholder="گروه  مورد نظر را انتخاب کنید">
+                    <option>
+                    </option>
+                    <?php
+
+                    foreach ($this->groups as $group):
+                        ?>
+                        <option <?php if ($this->Car['GROUP_CARGROUP'] == $group['SUBCODE'])
+                            echo " selected "; ?> value="<?php echo base64_encode(Application_Model_Func_Crypt::Encrypt($group['SUBCODE']));
+                               ?>"><?php echo $group['SUBCATNAME'] ?></option>
+                        <?php
+                    endforeach;
+                    ?>
+                </select>
+            </div>
+        </div>
+        <div class="col-xs-10 col-sm-10 col-md-5 col-lg-5">
+            <div class="form-group">
+                <label for="factory"> سازنده <span class="required">*</span></label>
+                <select id='factory' class="form-control" name="<?php
+                $detailinputname = array('name' => "FACTORY_CARGROUP", 'title' => "سازنده ", 'required' => 1, 'encrypt' => 1);
+                echo base64_encode(Application_Model_Func_Crypt::Encrypt(json_encode($detailinputname)));
+                ?>" required placeholder="سازنده  مورد نظر را انتخاب کنید">
+                    <option>
+                    </option>
+                    <?php
+                    foreach ($this->factorys as $factory):
+                        ?>
+                        <option <?php if ($this->Car['FACTORY_CARGROUP'] == $factory['SUBCODE'])
+                            echo " selected "; ?> value="<?php echo base64_encode(Application_Model_Func_Crypt::Encrypt($factory['SUBCODE']));
+                               ?>"><?php echo $factory['SUBCATNAME'] ?></option>
+                        <?php
+                    endforeach;
+                    ?>
+                </select>
+            </div>
+        </div>
+
+        <div class="col-xs-10 col-sm-10 col-md-5 col-lg-5">
+            <div class="form-group">
+                <label for="model">مدل <span class="required">*</span></label>
+                <select type="text" class="form-control" id="model" name="<?php
+                $detailinputname = array('name' => "MODEL_CARGROUP", 'title' => "مدل گروه خودرویی", 'required' => 1, 'encrypt' => 1);
+                echo base64_encode(Application_Model_Func_Crypt::Encrypt(json_encode($detailinputname)));
+                ?>" required='required' placeholder=" مدل خودرو را وارد کنید">
+                    <option>
+                    </option>
+                </select>
+            </div>
+        </div>
+
+        <div class="col-xs-10 col-sm-10 col-md-5 col-lg-5">
+            <div class="form-group">
+                <label for="year">سال تولید <span class="required">*</span></label>
+                <select type="text" class="form-control" id="year" name="<?php
+                $detailinputname = array('name' => "YEAR_CARGROUP", 'title' => "مدل گروه خودرویی", 'required' => 1, 'encrypt' => 1);
+                echo base64_encode(Application_Model_Func_Crypt::Encrypt(json_encode($detailinputname)));
+                ?>" required='required' placeholder=" سال تولید خودرو را وارد کنید">
+                    <option>
+                    </option>
+                    <?php
+                    for ($year = 1900; $year <= date('Y'); $year++) {
+                        ?>
+                        <option value="<?php echo base64_encode(Application_Model_Func_Crypt::Encrypt($year)); ?>"><?php echo $year; ?> </option>
+                        <?php
+                    }
+                    ?>
+                </select>
+            </div>
+        </div>
+
+</form>
+<script>
+    function getData($factory) {
+        var optionList = [];
+        var model = '<?php echo base64_encode(Application_Model_Func_Crypt::Encrypt($this->Car['MODEL_CARGROUP'])) ?>';
+        var selected = '';
+        $.post('<?php echo $this->baseUrl() ?>/Coding/Mngcoding/getmodel' , { 'factory': $factory}, function (result, status) {
+            $('#model').find('option').remove();
+            $.each(result, function (index, elm) {
+                if (elm['SUBCODE'] == model) {
+                    selected = 'selected';
+                }
+                else {
+                    selected = '';
+                }
+                $('#model').find('option').end().append('<option ' + selected + ' value="' + elm['SUBCODE'] + '">' + elm['SUBCATNAME'] + '</option>');
+            });
+        }, 'json');
+    }
+ 
+
+        $(document).ready(function () {
+            var factory = '<?php echo base64_encode(Application_Model_Func_Crypt::Encrypt($this->Car['FACTORY_CARGROUP'])) ?>';
+           
+        if (factory != '') {
+            getData(factory);
+        }
+        $('#factory').on('change', function () {
+            getData($(this).val());
+        });
+            $('*[required]').attr('oninvalid', "this.setCustomValidity('این فیلد نباید خالی باشد.')");
+            $('*[required]').attr('oninput', "this.setCustomValidity('')");
+
+        });
+</script>

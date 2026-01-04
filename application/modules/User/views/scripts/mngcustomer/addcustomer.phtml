@@ -1,0 +1,137 @@
+<form role="form" class="frm" method="POST" action="<?php $this->baseUrl() ?>/User/MngCustomer/Savecustomer"
+    id="frmAddCustomers">
+    <?php
+    if (isset($this->toolbars)) {
+        ?>
+        <div class="row" style="direction:ltr;margin-bottom: 10px;">
+            <header class="">
+                <div class="animate__animated animate__fadeInDown">
+                    <ul class="nav navbar-nav ">
+
+                        <?php
+                        foreach ($this->toolbars as $keytools => $tools):
+                            ?>
+                            <li class="nav-item">
+                                <?php
+                                echo $tools;
+                                ?>
+                            </li>
+
+                            <?php
+                        endforeach;
+                        ?>
+
+
+                    </ul>
+                </div>
+            </header>
+        </div>
+        <?php
+    }
+    ?>
+    <?php
+    if (isset($this->CUSTOMER)):
+        ?>
+        <input name="<?php
+        $detailinputname = array('name' => "ID_CUSTOMER", 'title' => "شماره اختصاصی", 'required' => 1, 'encrypt' => 1);
+        echo base64_encode(Application_Model_Func_Crypt::Encrypt(json_encode($detailinputname)));
+        ?>" type="hidden"
+            value="<?php echo base64_encode(Application_Model_Func_Crypt::Encrypt($this->CUSTOMER['ID_CUSTOMER'])) ?>" />
+        <?php
+    endif
+    ?>
+    <div class="row">
+        <div class="col-xs-10 col-sm-10 col-md-5 col-lg-5">
+            <div class="form-group">
+                <label for="pid">مشخصات فردی<span class="required">*</span></label>
+                <select id='pid' class="form-control selectpicker" data-allow-clear="1" data-live-search="true" name="<?php
+                $detailinputname = array('name' => "PERSONID_CUSTOMER", 'title' => "مشخصات فردی", 'required' => 1, 'encrypt' => 1);
+                echo base64_encode(Application_Model_Func_Crypt::Encrypt(json_encode($detailinputname)));
+                ?>" required placeholder="مالک این حساب مشتریی کیست نام و نام خانوادگی؟؟">
+                    <option>
+                    </option>
+                    <?php
+                    foreach ($this->persons as $person):
+                        ?>
+                        <option <?php
+                        if($this->CUSTOMER['PERSONID_CUSTOMER']==$person['ID_PERSON']) echo ' selected ';
+                        ?> value="<?php echo base64_encode(Application_Model_Func_Crypt::Encrypt($person['ID_PERSON']));
+                        ?>"><?php echo $person['NAME_PERSON'] . ' ' . $person['FAMIL'] . ' ' . $person['CODEMELI'] ?>
+                        </option>
+                        <?php
+                    endforeach;
+                    ?>
+                </select>
+            </div>
+        </div>
+        <div class="col-xs-10 col-sm-10 col-md-5 col-lg-5">
+            <div class="form-group">
+                <label for="usr">نام کاربری مشتریی <span class="required">*</span></label>
+                <input type="text" class="form-control" value="<?php
+                if (isset($this->CUSTOMER)):
+                    echo $this->CUSTOMER['USERNAME_CUSTOMER'];
+                endif;
+                ?>" id="usr" name="<?php
+                $detailinputname = array('name' => "USERNAME_CUSTOMER", 'title' => "نام کاربری مشتریی", 'required' => 1);
+                echo base64_encode(Application_Model_Func_Crypt::Encrypt(json_encode($detailinputname)));
+                ?>" required='required' placeholder="نام کاربری مشتریی را وارد کنید">
+            </div>
+        </div>
+        <div class="col-xs-10 col-sm-10 col-md-5 col-lg-5">
+            <div class="form-group">
+                <label for="pwd">رمز عبور <span class="required">*</span></label>
+                <input type="password" class="form-control" value="<?php
+                if (isset($this->CUSTOMER)):
+                    echo $this->CUSTOMER['PASSWORD_CUSTOMER'];
+                endif;
+                ?>" id="pwd" name="<?php
+                $detailinputname = array('name' => "PASSWORD_CUSTOMER", 'title' => "رمز عبور", 'required' => 1);
+                echo base64_encode(Application_Model_Func_Crypt::Encrypt(json_encode($detailinputname)));
+                ?>" required='required' placeholder="رمز عبور را وارد کنید">
+            </div>
+        </div>
+        <div class="col-xs-10 col-sm-10 col-md-5 col-lg-5">
+            <div class="form-group">
+                <label for="gid">عضو گروه<span class="required">*</span></label>
+                <select id='gid' class="form-control" name="<?php
+                $detailinputname = array('name' => "ACL_CUSTOMER", 'title' => "گروه", 'required' => 1, 'encrypt' => 1);
+                echo base64_encode(Application_Model_Func_Crypt::Encrypt(json_encode($detailinputname)));
+                ?>" required placeholder="عضو چه گروهی می باشد">
+                    <option>
+                    </option>
+                    <?php
+                    foreach ($this->groups as $group):
+                        ?>
+                        <option <?php
+                        if ($group['ID'] == $this->CUSTOMER['ACL_CUSTOMER']) {
+                            echo " selected ";
+                        }
+                        ?> value="<?php echo base64_encode(Application_Model_Func_Crypt::Encrypt($group['ID']));
+                         ?>"><?php echo $group['NAME'] ?></option>
+                        <?php
+                    endforeach;
+                    ?>
+                </select>
+            </div>
+        </div>
+        <div class="col-xs-10 col-sm-10 col-md-5 col-lg-5">
+            <div class="form-group">
+                <label for="status">وضعیت فعال/غیر فعال <span class="required">*</span></label>
+                <input type="checkbox" <?php 
+                if($this->CUSTOMER['ACTIVE_CUSTOMER']==1) echo " checked ";
+                ?> class="" value="1" id="status" name="<?php
+                $detailinputname = array('name' => "ACTIVE_CUSTOMER", 'title' => "فعال");
+                echo base64_encode(Application_Model_Func_Crypt::Encrypt(json_encode($detailinputname)));
+                ?>" placeholder="آیا مشتریی فعال می باشد؟">
+            </div>
+        </div>
+    </div>
+</form>
+<script>
+    $(document).ready(function () {
+
+        $('*[required]').attr('oninvalid', "this.setCustomValidity('این فیلد نباید خالی باشد.')");
+        $('*[required]').attr('oninput', "this.setCustomValidity('')");
+
+    });
+</script>
