@@ -1,0 +1,339 @@
+<form id="addPersonnelForm"  method="post" action="<?php echo $this->url(array('module' => 'Personnel', 'controller' => 'personnel', 'action' => 'add-personnel'), 'default', true); ?>">
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="NationalCode">National Code *</label>
+                <input type="text" class="form-control" id="NationalCode" name="NationalCode" 
+                       required maxlength="10" pattern="\d{10}"
+                       title="Enter 10-digit Iranian National Code">
+                <small class="form-text text-muted">10-digit Iranian National Code (کد ملی)</small>
+                <div class="invalid-feedback" id="nationalCodeError">
+                    Please enter a valid 10-digit National Code
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="PersonnelNumber">Personnel Number</label>
+                <input type="text" class="form-control" id="PersonnelNumber" name="PersonnelNumber" 
+                       maxlength="50">
+                <div class="invalid-feedback" id="personnelNumberError">
+                    Personnel Number already exists
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="FirstName">First Name *</label>
+                <input type="text" class="form-control" id="FirstName" name="FirstName" 
+                       required maxlength="100" pattern="[\u0600-\u06FF\s\-]+"
+                       title="Only Persian/Arabic letters, spaces, and dashes">
+                <small class="form-text text-muted">Persian/Arabic letters only</small>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="LastName">Last Name *</label>
+                <input type="text" class="form-control" id="LastName" name="LastName" 
+                       required maxlength="100" pattern="[\u0600-\u06FF\s\-]+"
+                       title="Only Persian/Arabic letters, spaces, and dashes">
+                <small class="form-text text-muted">Persian/Arabic letters only</small>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="Mobile1">Mobile *</label>
+                <input type="tel" class="form-control" id="Mobile1" name="Mobile1" 
+                       required pattern="^(\+98|0)?9\d{9}$"
+                       title="Iranian mobile number (0912XXXXXXX or +98912XXXXXXX)">
+                <small class="form-text text-muted">Format: 0912XXXXXXX or +98912XXXXXXX</small>
+                <div class="invalid-feedback" id="mobile1Error">
+                    Please enter a valid Iranian mobile number
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="Phone2">Phone (Landline)</label>
+                <input type="tel" class="form-control" id="Phone2" name="Phone2" 
+                       pattern="^(\+98|0)?2\d{9}$"
+                       title="Iranian landline number (021XXXXXXX or +9821XXXXXXX)">
+                <small class="form-text text-muted">Format: 021XXXXXXX or +9821XXXXXXX</small>
+                <div class="invalid-feedback" id="phone2Error">
+                    Please enter a valid Iranian landline number
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="EndDate">End Date</label>
+                <input type="text" class="form-control" id="EndDate" name="EndDate" 
+                       pattern="^\d{4}[-/]\d{2}[-/]\d{2}$"
+                       title="Date format: YYYY-MM-DD or YYYY/MM/DD">
+                <small class="form-text text-muted">Format: YYYY-MM-DD or YYYY/MM/DD</small>
+                <div class="invalid-feedback">
+                    Please enter a valid date (YYYY-MM-DD or YYYY/MM/DD)
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="Description">Description</label>
+                <input type="text" class="form-control" id="Description" name="Description" maxlength="100">
+            </div>
+        </div>
+    </div>
+    
+    <div class="form-group">
+        <div class="custom-control custom-checkbox">
+            <input type="checkbox" class="custom-control-input" id="IsActive" name="IsActive" value="1" checked>
+            <label class="custom-control-label" for="IsActive">Active Personnel</label>
+        </div>
+    </div>
+    
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+        <button type="submit" class="btn btn-primary">Add Personnel</button>
+    </div>
+</form>
+
+<script>
+$(document).ready(function() {
+    // National Code validation
+    $('#NationalCode').on('blur', function() {
+        var nationalCode = $(this).val().trim();
+        
+        if (nationalCode.length === 10 && /^\d{10}$/.test(nationalCode)) {
+            // Validate Iranian National Code algorithm
+            if (validateIranianNationalCode(nationalCode)) {
+                // Check if National Code exists
+                $.ajax({
+                    url: '<?php echo $this->url(array('module' => 'Personnel', 'controller' => 'personnel', 'action' => 'check-national-code'), 'default', true); ?>',
+                    type: 'GET',
+                    data: {nationalCode: nationalCode},
+                    success: function(response) {
+                        var result = JSON.parse(response);
+                        var input = $('#NationalCode');
+                        
+                        if (result.available) {
+                            input.removeClass('is-invalid').addClass('is-valid');
+                            $('#nationalCodeError').text('');
+                        } else {
+                            input.removeClass('is-valid').addClass('is-invalid');
+                            $('#nationalCodeError').text(result.message);
+                        }
+                    }
+                });
+            } else {
+                $('#NationalCode').addClass('is-invalid');
+                $('#nationalCodeError').text('Invalid National Code');
+            }
+        } else if (nationalCode) {
+            $('#NationalCode').addClass('is-invalid');
+            $('#nationalCodeError').text('National Code must be 10 digits');
+        }
+    });
+    
+    // Personnel Number availability check
+    $('#PersonnelNumber').on('blur', function() {
+        var personnelNumber = $(this).val().trim();
+        
+        if (personnelNumber) {
+            $.ajax({
+                url: '<?php echo $this->url(array('module' => 'Personnel', 'controller' => 'personnel', 'action' => 'check-personnel-number'), 'default', true); ?>',
+                type: 'GET',
+                data: {personnelNumber: personnelNumber},
+                success: function(response) {
+                    var result = JSON.parse(response);
+                    var input = $('#PersonnelNumber');
+                    
+                    if (result.available) {
+                        input.removeClass('is-invalid').addClass('is-valid');
+                        $('#personnelNumberError').text('');
+                    } else {
+                        input.removeClass('is-valid').addClass('is-invalid');
+                        $('#personnelNumberError').text(result.message);
+                    }
+                }
+            });
+        }
+    });
+    
+    // Mobile validation and formatting
+    $('#Mobile1').on('blur', function() {
+        var mobile = $(this).val().trim();
+        var formatted = formatIranianMobile(mobile);
+        
+        if (formatted) {
+            $(this).val(formatted);
+            $(this).removeClass('is-invalid').addClass('is-valid');
+            $('#mobile1Error').text('');
+        } else if (mobile) {
+            $(this).addClass('is-invalid');
+            $('#mobile1Error').text('Invalid mobile number. Use 0912XXXXXXX or +98912XXXXXXX');
+        }
+    });
+    
+    // Phone validation and formatting
+    $('#Phone2').on('blur', function() {
+        var phone = $(this).val().trim();
+        
+        if (phone) {
+            var formatted = formatIranianPhone(phone);
+            if (formatted) {
+                $(this).val(formatted);
+                $(this).removeClass('is-invalid').addClass('is-valid');
+                $('#phone2Error').text('');
+            } else {
+                $(this).addClass('is-invalid');
+                $('#phone2Error').text('Invalid phone number. Use 021XXXXXXX or +9821XXXXXXX');
+            }
+        }
+    });
+    
+    // Date validation
+    $('#EndDate').on('blur', function() {
+        var date = $(this).val().trim();
+        
+        if (date && !isValidDate(date)) {
+            $(this).addClass('is-invalid');
+        } else if (date) {
+            $(this).removeClass('is-invalid').addClass('is-valid');
+        }
+    });
+    
+    // Form submission validation
+    $('#addPersonnelForm').on('submit', function(e) {
+        var isValid = true;
+        
+        // Validate National Code
+        var nationalCode = $('#NationalCode').val().trim();
+        if (!nationalCode || !validateIranianNationalCode(nationalCode)) {
+            $('#NationalCode').addClass('is-invalid');
+            $('#nationalCodeError').text('Please enter a valid National Code');
+            isValid = false;
+        }
+        
+        // Validate First Name
+        var firstName = $('#FirstName').val().trim();
+        if (!firstName || !/^[\u0600-\u06FF\s\-]+$/.test(firstName)) {
+            $('#FirstName').addClass('is-invalid');
+            isValid = false;
+        }
+        
+        // Validate Last Name
+        var lastName = $('#LastName').val().trim();
+        if (!lastName || !/^[\u0600-\u06FF\s\-]+$/.test(lastName)) {
+            $('#LastName').addClass('is-invalid');
+            isValid = false;
+        }
+        
+        // Validate Mobile
+        var mobile = $('#Mobile1').val().trim();
+        if (!mobile || !formatIranianMobile(mobile)) {
+            $('#Mobile1').addClass('is-invalid');
+            $('#mobile1Error').text('Please enter a valid mobile number');
+            isValid = false;
+        }
+        
+        // Validate Phone (if provided)
+        var phone = $('#Phone2').val().trim();
+        if (phone && !formatIranianPhone(phone)) {
+            $('#Phone2').addClass('is-invalid');
+            $('#phone2Error').text('Please enter a valid phone number');
+            isValid = false;
+        }
+        
+        // Validate Date (if provided)
+        var date = $('#EndDate').val().trim();
+        if (date && !isValidDate(date)) {
+            $('#EndDate').addClass('is-invalid');
+            isValid = false;
+        }
+        
+        if (!isValid) {
+            e.preventDefault();
+            alert('Please correct the errors in the form');
+            return false;
+        }
+        
+        return true;
+    });
+    
+    // Clear validation on focus
+    $('input').on('focus', function() {
+        $(this).removeClass('is-invalid');
+    });
+    
+    // Helper functions
+    function validateIranianNationalCode(code) {
+        if (!/^\d{10}$/.test(code)) return false;
+        
+        // Check for same digits
+        if (/^(\d)\1{9}$/.test(code)) return false;
+        
+        // Iranian National Code validation algorithm
+        var sum = 0;
+        for (var i = 0; i < 9; i++) {
+            sum += parseInt(code[i]) * (10 - i);
+        }
+        
+        var remainder = sum % 11;
+        var controlDigit = parseInt(code[9]);
+        
+        if ((remainder < 2 && controlDigit === remainder) || 
+            (remainder >= 2 && controlDigit === (11 - remainder))) {
+            return true;
+        }
+        
+        return false;
+    }
+    
+    function formatIranianMobile(mobile) {
+        var digits = mobile.replace(/\D/g, '');
+        
+        if (/^(09|9|989|\+989)\d{9}$/.test(digits)) {
+            if (digits.length === 10 && digits[0] === '9') {
+                return '0' + digits;
+            } else if (digits.length === 11 && digits.substring(0, 2) === '98') {
+                return '0' + digits.substring(2);
+            } else if (digits.length === 12 && digits.substring(0, 3) === '989') {
+                return '0' + digits.substring(3);
+            }
+            return digits;
+        }
+        
+        return false;
+    }
+    
+    function formatIranianPhone(phone) {
+        var digits = phone.replace(/\D/g, '');
+        
+        if (/^(0|98|\+98)?2\d{9}$/.test(digits)) {
+            if (digits.length === 10 && digits[0] === '2') {
+                return '0' + digits;
+            } else if (digits.length === 11 && digits.substring(0, 2) === '98') {
+                return '0' + digits.substring(2);
+            } else if (digits.length === 12 && digits.substring(0, 3) === '982') {
+                return '0' + digits.substring(3);
+            }
+            return digits;
+        }
+        
+        return false;
+    }
+    
+    function isValidDate(date) {
+        return /^\d{4}[-/]\d{2}[-/]\d{2}$/.test(date);
+    }
+});
+</script>

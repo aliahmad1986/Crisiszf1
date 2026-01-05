@@ -1,0 +1,191 @@
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Personnel Management</h3>
+                    <div class="card-tools">
+                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addPersonnelModal">
+                            <i class="fa fa-plus"></i> Add New Personnel
+                        </button>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <table id="personnelTable" class="table table-bordered table-striped">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>National Code</th>
+                                <th>Full Name</th>
+                                <th>Mobile</th>
+                                <th>Phone</th>
+                                <th>Personnel No.</th>
+                                <th>Status</th>
+                                <th>End Date</th>
+                                <th>Created At</th>
+                                <th>Created By</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Data will be loaded via AJAX -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Add Personnel Modal -->
+<div class="modal fade" id="addPersonnelModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Add New Personnel</h5>
+                <button type="button" class="close" data-dismiss="modal">
+                    <span>&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" id="addPersonnelFormContainer">
+                <!-- Form will be loaded via AJAX -->
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Edit Personnel Modal -->
+<div class="modal fade" id="editPersonnelModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Edit Personnel</h5>
+                <button type="button" class="close" data-dismiss="modal">
+                    <span>&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" id="editPersonnelFormContainer">
+                <!-- Form will be loaded via AJAX -->
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Confirm Delete</h5>
+                <button type="button" class="close" data-dismiss="modal">
+                    <span>&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to delete this personnel?</p>
+                <input type="hidden" id="deletePersonnelId">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-danger" id="confirmDelete">Delete</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+$(document).ready(function() {
+    // Initialize DataTable
+    var table = $('#personnelTable').DataTable({
+        "processing": true,
+        "serverSide": false,
+        "ajax": {
+            "url": "<?php echo $this->url(array('module' => 'Personnel', 'controller' => 'personnel', 'action' => 'index'), 'default', true); ?>",
+            "type": "POST"
+        },
+        "columns": [
+            {"data": "PersonnelID"},
+            {"data": "NationalCode"},
+            {"data": "FullName"},
+            {"data": "Mobile1"},
+            {"data": "Phone2"},
+            {"data": "PersonnelNumber"},
+            {"data": "IsActive"},
+            {"data": "EndDate"},
+            {"data": "CreatedAt"},
+            {"data": "CreatedByName"},
+            {"data": "Actions", "orderable": false}
+        ],
+        "responsive": true,
+        "pageLength": 25,
+        "language": {
+            "emptyTable": "No personnel found",
+            "info": "Showing _START_ to _END_ of _TOTAL_ personnel",
+            "infoEmpty": "Showing 0 to 0 of 0 personnel",
+            "infoFiltered": "(filtered from _MAX_ total personnel)",
+            "lengthMenu": "Show _MENU_ personnel",
+            "loadingRecords": "Loading...",
+            "processing": "Processing...",
+            "search": "Search:",
+            "zeroRecords": "No matching personnel found"
+        }
+    });
+
+    // Load add personnel form
+    $('#addPersonnelModal').on('show.bs.modal', function() {
+        $('#addPersonnelFormContainer').load('<?php echo $this->url(array('module' => 'Personnel', 'controller' => 'personnel', 'action' => 'add-personnel'), 'default', true); ?>');
+    });
+
+    // Load edit personnel form
+    $(document).on('click', '.edit-personnel', function() {
+        var personnelId = $(this).data('id');
+        $('#editPersonnelFormContainer').load('<?php echo $this->url(array('module' => 'Personnel', 'controller' => 'personnel', 'action' => 'edit-personnel'), 'default', true); ?>?id=' + personnelId, function() {
+            $('#editPersonnelModal').modal('show');
+        });
+    });
+
+    // Delete personnel
+    $(document).on('click', '.delete-personnel', function() {
+        var personnelId = $(this).data('id');
+        $('#deletePersonnelId').val(personnelId);
+        $('#deleteModal').modal('show');
+    });
+
+    // Confirm delete
+    $('#confirmDelete').click(function() {
+        var personnelId = $('#deletePersonnelId').val();
+        $.ajax({
+            url: '<?php echo $this->url(array('module' => 'Personnel', 'controller' => 'personnel', 'action' => 'delete'), 'default', true); ?>',
+            type: 'POST',
+            data: {id: personnelId},
+            success: function(response) {
+                var result = JSON.parse(response);
+                if (result.success) {
+                    $('#deleteModal').modal('hide');
+                    table.ajax.reload();
+                    showAlert('success', result.message);
+                } else {
+                    showAlert('error', result.message);
+                }
+            }
+        });
+    });
+
+    // Alert function
+    function showAlert(type, message) {
+        var alertClass = type === 'success' ? 'alert-success' : 'alert-danger';
+        var alertHtml = '<div class="alert ' + alertClass + ' alert-dismissible fade show" role="alert">' +
+            message +
+            '<button type="button" class="close" data-dismiss="alert">' +
+            '<span>&times;</span>' +
+            '</button>' +
+            '</div>';
+        
+        $('.container-fluid').prepend(alertHtml);
+        
+        setTimeout(function() {
+            $('.alert').alert('close');
+        }, 5000);
+    }
+});
+</script>

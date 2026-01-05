@@ -149,7 +149,7 @@ $(document).ready(function() {
         "processing": true,
         "serverSide": false,
         "ajax": {
-            "url": "<?php echo $this->url(array('module' => 'user', 'controller' => 'user', 'action' => 'index'), 'default', true); ?>",
+            "url": "<?php echo $this->url(array('module' => 'User', 'controller' => 'user', 'action' => 'index'), 'default', true); ?>",
             "type": "POST",
             "error": function(xhr, error, thrown) {
                 console.error('DataTable error:', error);
@@ -157,16 +157,18 @@ $(document).ready(function() {
             }
         },
         "columns": [
-            {"data": "UserID", "className": "text-center"},
-            {"data": "Username"},
-            {"data": "FullName"},
-            {"data": "Email"},
-            {"data": "Mobile"},
-            {"data": "IsActive", "className": "text-center"},
-            {"data": "CreatedAt", "className": "text-center"},
-            {"data": "CreatedByName", "className": "text-center"},
-            {"data": "Actions", "className": "text-center", "orderable": false}
-        ],
+    {"data": "UserID"},
+    {"data": "Username"},
+    {"data": "FullName"},
+    {"data": "PersonnelInfo"},
+    {"data": "Email"},
+    {"data": "Mobile"},
+    {"data": "IsActive"},
+    {"data": "CreatedAt"},
+    {"data": "CreatedByName"},
+    {"data": "Actions", "orderable": false}
+],
+  
         "responsive": true,
         "pageLength": 10,
         "lengthMenu": [[10, 25, 50, 100, -1], [10, 25, 50, 100, "All"]],
@@ -187,7 +189,7 @@ $(document).ready(function() {
     // Load add user form
     $('#addUserModal').on('show.bs.modal', function() {
         $('#addUserFormContainer').html('<div class="text-center p-5"><i class="fa fa-spinner fa-spin fa-3x"></i></div>');
-        $('#addUserFormContainer').load('<?php echo $this->url(array('module' => 'user', 'controller' => 'user', 'action' => 'add-user'), 'default', true); ?>', function() {
+        $('#addUserFormContainer').load('<?php echo $this->url(array('module' => 'User', 'controller' => 'user', 'action' => 'add-user'), 'default', true); ?>', function() {
             initFormValidation('#addUserForm');
         });
     });
@@ -196,7 +198,7 @@ $(document).ready(function() {
     $(document).on('click', '.edit-user', function() {
         var userId = $(this).data('id');
         $('#editUserFormContainer').html('<div class="text-center p-5"><i class="fa fa-spinner fa-spin fa-3x"></i></div>');
-        $('#editUserFormContainer').load('<?php echo $this->url(array('module' => 'user', 'controller' => 'user', 'action' => 'edit-user'), 'default', true); ?>?id=' + userId, function() {
+        $('#editUserFormContainer').load('<?php echo $this->url(array('module' => 'User', 'controller' => 'user', 'action' => 'edit-user'), 'default', true); ?>?id=' + userId, function() {
             initFormValidation('#editUserForm');
             $('#editUserModal').modal('show');
         });
@@ -278,7 +280,7 @@ $(document).ready(function() {
         deleteBtn.prop('disabled', true).html('<i class="fa fa-spinner fa-spin"></i> Deleting...');
         
         $.ajax({
-            url: '<?php echo $this->url(array('module' => 'user', 'controller' => 'user', 'action' => 'delete'), 'default', true); ?>',
+            url: '<?php echo $this->url(array('module' => 'User', 'controller' => 'user', 'action' => 'delete'), 'default', true); ?>',
             type: 'POST',
             data: {id: userId},
             success: function(response) {
@@ -306,7 +308,7 @@ $(document).ready(function() {
         
         if (username.length > 2) {
             $.ajax({
-                url: '<?php echo $this->url(array('module' => 'user', 'controller' => 'user', 'action' => 'check-username'), 'default', true); ?>',
+                url: '<?php echo $this->url(array('module' => 'User', 'controller' => 'user', 'action' => 'check-username'), 'default', true); ?>',
                 type: 'GET',
                 data: {username: username, userId: userId},
                 success: function(response) {
