@@ -1,0 +1,97 @@
+<form id="addUserForm" action="<?php echo $this->url(array('module' => 'user', 'controller' => 'user', 'action' => 'add-user'), 'default', true); ?>">
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="Username" class="font-weight-bold">Username *</label>
+                <input type="text" class="form-control" id="Username" name="Username" 
+                       placeholder="Enter username" required minlength="3" maxlength="100">
+                <small class="form-text text-muted">Minimum 3 characters</small>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="Password" class="font-weight-bold">Password *</label>
+                <input type="password" class="form-control" id="Password" name="Password" 
+                       placeholder="Enter password" required minlength="6">
+                <small class="form-text text-muted">Minimum 6 characters</small>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="FullName" class="font-weight-bold">Full Name *</label>
+                <input type="text" class="form-control" id="FullName" name="FullName" 
+                       placeholder="Enter full name" required maxlength="200">
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="Email" class="font-weight-bold">Email</label>
+                <input type="email" class="form-control" id="Email" name="Email" 
+                       placeholder="Enter email address" maxlength="150">
+            </div>
+        </div>
+    </div>
+    
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="Mobile" class="font-weight-bold">Mobile</label>
+                <input type="text" class="form-control" id="Mobile" name="Mobile" 
+                       placeholder="Enter mobile number" maxlength="20">
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="PersonelID" class="font-weight-bold">Personnel ID</label>
+                <input type="number" class="form-control" id="PersonelID" name="PersonelID" 
+                       placeholder="Enter personnel ID">
+            </div>
+        </div>
+    </div>
+    
+    <div class="form-group">
+        <div class="custom-control custom-switch">
+            <input type="checkbox" class="custom-control-input" id="IsActive" name="IsActive" value="1" checked>
+            <label class="custom-control-label" for="IsActive">Active User</label>
+        </div>
+    </div>
+    
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">
+            <i class="fa fa-times mr-1"></i> Cancel
+        </button>
+        <button type="submit" class="btn btn-primary">
+            <i class="fa fa-save mr-1"></i> Add User
+        </button>
+    </div>
+</form>
+
+<script>
+$(document).ready(function() {
+    // Password strength indicator
+    $('#Password').on('keyup', function() {
+        var password = $(this).val();
+        var strength = 0;
+        
+        if (password.length >= 6) strength++;
+        if (password.match(/[a-z]/)) strength++;
+        if (password.match(/[A-Z]/)) strength++;
+        if (password.match(/[0-9]/)) strength++;
+        if (password.match(/[^a-zA-Z0-9]/)) strength++;
+        
+        var strengthText = ['Very Weak', 'Weak', 'Fair', 'Good', 'Strong'][strength] || 'Very Weak';
+        var strengthClass = ['danger', 'danger', 'warning', 'info', 'success'][strength] || 'danger';
+        
+        var indicator = $('#password-strength');
+        if (!indicator.length) {
+            indicator = $('<small class="form-text"><span id="password-strength"></span></small>');
+            $(this).parent().append(indicator);
+        }
+        
+        $('#password-strength').html('Strength: <span class="text-' + strengthClass + ' font-weight-bold">' + strengthText + '</span>');
+    });
+});
+</script>
