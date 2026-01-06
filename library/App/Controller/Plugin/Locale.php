@@ -61,7 +61,7 @@ class App_Controller_Plugin_Locale extends Zend_Controller_Plugin_Abstract
             }
 
             $postModified = array('encryptDataPosted' => $post, 'decryptDataPosted' => $post2, 'filePosted' => $post3);
-            $request->setPost($postModified);
+           // $request->setPost($postModified);
 
         }
 

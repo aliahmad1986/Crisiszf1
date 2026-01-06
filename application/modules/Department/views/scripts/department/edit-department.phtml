@@ -1,0 +1,240 @@
+<?php 
+$department = $this->department;
+$centers = $this->centers;
+$departmentTypes = $this->departmentTypes;
+?>
+<form  method="post" id="editDepartmentForm" action="<?php echo $this->url(array('module' => 'Department', 'controller' => 'department', 'action' => 'edit-department', 'id' => $department['DepartmentID']), 'default', true); ?>">
+    <input type="hidden" name="id" value="<?php echo $department['DepartmentID']; ?>">
+    
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="CenterID">Center *</label>
+                <select class="form-control" id="CenterID" name="CenterID" required>
+                    <option value="">Select Center</option>
+                    <?php foreach ($centers as $center): ?>
+                    <option value="<?php echo $center['CenterID']; ?>"
+                        <?php echo $department['CenterID'] == $center['CenterID'] ? 'selected' : ''; ?>>
+                        <?php echo htmlspecialchars($center['CenterName'], ENT_QUOTES, 'UTF-8'); ?>
+                    </option>
+                    <?php endforeach; ?>
+                </select>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="DepartmentTypeID">Department Type *</label>
+                <select class="form-control" id="DepartmentTypeID" name="DepartmentTypeID" required>
+                    <option value="">Select Type</option>
+                    <?php foreach ($departmentTypes as $type): ?>
+                    <option value="<?php echo $type['DepartmentTypeID']; ?>"
+                        <?php echo $department['DepartmentTypeID'] == $type['DepartmentTypeID'] ? 'selected' : ''; ?>>
+                        <?php echo htmlspecialchars($type['DepartmentTypeName'], ENT_QUOTES, 'UTF-8'); ?>
+                    </option>
+                    <?php endforeach; ?>
+                </select>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="DepartmentCode">Department Code</label>
+                <input type="text" class="form-control" id="DepartmentCode" name="DepartmentCode" 
+                       value="<?php echo $this->escape($department['DepartmentCode']); ?>"
+                       maxlength="50"
+                       data-department-id="<?php echo $department['DepartmentID']; ?>">
+                <small class="form-text text-muted">Unique code for department (optional)</small>
+                <div class="invalid-feedback" id="departmentCodeError">
+                    Department Code already exists
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="DepartmentName">Department Name *</label>
+                <input type="text" class="form-control" id="DepartmentName" name="DepartmentName" 
+                       value="<?php echo $this->escape($department['DepartmentName']); ?>"
+                       required maxlength="200"
+                       data-department-id="<?php echo $department['DepartmentID']; ?>">
+                <div class="invalid-feedback" id="departmentNameError">
+                    Department name already exists in this center
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="Phone1">Primary Phone</label>
+                <input type="tel" class="form-control" id="Phone1" name="Phone1" 
+                       value="<?php echo $this->escape($department['Phone1']); ?>"
+                       maxlength="15" pattern="^[\d\s\-\+\(\)]{8,15}$"
+                       title="Enter a valid phone number (8-15 digits)">
+                <small class="form-text text-muted">Format: 021XXXXXXX or 0912XXXXXXX</small>
+                <div class="invalid-feedback">
+                    Please enter a valid phone number
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="Phone2">Secondary Phone</label>
+                <input type="tel" class="form-control" id="Phone2" name="Phone2" 
+                       value="<?php echo $this->escape($department['Phone2']); ?>"
+                       maxlength="15" pattern="^[\d\s\-\+\(\)]{0,15}$"
+                       title="Enter a valid phone number (8-15 digits) or leave blank">
+                <small class="form-text text-muted">Optional - Same format as primary phone</small>
+                <div class="invalid-feedback">
+                    Please enter a valid phone number
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="form-group">
+        <div class="custom-control custom-checkbox">
+            <input type="checkbox" class="custom-control-input" id="IsActive" name="IsActive" 
+                   value="1" <?php echo $department['IsActive'] ? 'checked' : ''; ?>>
+            <label class="custom-control-label" for="IsActive">Active Department</label>
+        </div>
+    </div>
+    
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+        <button type="submit" class="btn btn-primary">Update Department</button>
+    </div>
+</form>
+
+<script>
+$(document).ready(function() {
+    // Department Code validation
+    $('#DepartmentCode').on('blur', function() {
+        var departmentCode = $(this).val().trim();
+        var departmentId = $(this).data('department-id');
+        
+        if (departmentCode) {
+            $.ajax({
+                url: '<?php echo $this->url(array('module' => 'Department', 'controller' => 'department', 'action' => 'check-department-code'), 'default', true); ?>',
+                type: 'GET',
+                data: {
+                    departmentCode: departmentCode,
+                    departmentId: departmentId
+                },
+                success: function(response) {
+                    var result = JSON.parse(response);
+                    var input = $('#DepartmentCode');
+                    
+                    if (result.available) {
+                        input.removeClass('is-invalid').addClass('is-valid');
+                        $('#departmentCodeError').text('');
+                    } else {
+                        input.removeClass('is-valid').addClass('is-invalid');
+                        $('#departmentCodeError').text(result.message);
+                    }
+                }
+            });
+        }
+    });
+    
+    // Department Name validation within center
+    $('#DepartmentName').on('blur', function() {
+        var departmentName = $(this).val().trim();
+        var centerId = $('#CenterID').val();
+        var departmentId = $(this).data('department-id');
+        
+        if (departmentName && centerId) {
+            $.ajax({
+                url: '<?php echo $this->url(array('module' => 'Department', 'controller' => 'department', 'action' => 'check-department-name'), 'default', true); ?>',
+                type: 'GET',
+                data: {
+                    centerId: centerId,
+                    departmentName: departmentName,
+                    departmentId: departmentId
+                },
+                success: function(response) {
+                    var result = JSON.parse(response);
+                    var input = $('#DepartmentName');
+                    
+                    if (result.available) {
+                        input.removeClass('is-invalid').addClass('is-valid');
+                        $('#departmentNameError').text('');
+                    } else {
+                        input.removeClass('is-valid').addClass('is-invalid');
+                        $('#departmentNameError').text(result.message);
+                    }
+                }
+            });
+        }
+    });
+    
+    // Phone validation
+    $('#Phone1, #Phone2').on('blur', function() {
+        var phone = $(this).val().trim();
+        
+        if (phone && !validatePhone(phone)) {
+            $(this).addClass('is-invalid');
+        } else if (phone) {
+            $(this).removeClass('is-invalid').addClass('is-valid');
+        } else {
+            $(this).removeClass('is-invalid is-valid');
+        }
+    });
+    
+    // Form submission validation
+    $('#editDepartmentForm').on('submit', function(e) {
+        var isValid = true;
+        
+        // Validate required fields
+        if (!$('#CenterID').val()) {
+            $('#CenterID').addClass('is-invalid');
+            isValid = false;
+        }
+        
+        if (!$('#DepartmentTypeID').val()) {
+            $('#DepartmentTypeID').addClass('is-invalid');
+            isValid = false;
+        }
+        
+        var departmentName = $('#DepartmentName').val().trim();
+        if (!departmentName) {
+            $('#DepartmentName').addClass('is-invalid');
+            isValid = false;
+        }
+        
+        // Validate phone numbers
+        var phone1 = $('#Phone1').val().trim();
+        if (phone1 && !validatePhone(phone1)) {
+            $('#Phone1').addClass('is-invalid');
+            isValid = false;
+        }
+        
+        var phone2 = $('#Phone2').val().trim();
+        if (phone2 && !validatePhone(phone2)) {
+            $('#Phone2').addClass('is-invalid');
+            isValid = false;
+        }
+        
+        if (!isValid) {
+            e.preventDefault();
+            alert('Please correct the errors in the form');
+            return false;
+        }
+        
+        return true;
+    });
+    
+    // Clear validation on focus
+    $('input, select').on('focus', function() {
+        $(this).removeClass('is-invalid');
+    });
+    
+    // Helper function for phone validation
+    function validatePhone(phone) {
+        var digits = phone.replace(/\D/g, '');
+        return digits.length >= 8 && digits.length <= 15;
+    }
+});
+</script>

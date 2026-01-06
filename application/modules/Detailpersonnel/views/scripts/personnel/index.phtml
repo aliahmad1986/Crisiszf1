@@ -1,0 +1,221 @@
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Personnel Department Assignments</h3>
+                    <div class="card-tools">
+                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addPersonnelModal">
+                            <i class="fa fa-plus"></i> Add New Assignment
+                        </button>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-info">
+                        <i class="fa fa-info-circle"></i> This module manages personnel assignments to departments with specific positions and date ranges.
+                    </div>
+                    
+                    <table id="personnelDetailsTable" class="table table-bordered table-striped">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Personnel</th>
+                                <th>Department</th>
+                                <th>Position</th>
+                                <th>From Date</th>
+                                <th>To Date</th>
+                                <th>Assignment Status</th>
+                                <th>Record Status</th>
+                                <th>Description</th>
+                                <th>Created</th>
+                                <th>Created By</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Data will be loaded via AJAX -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Add Personnel Modal -->
+<div class="modal fade" id="addPersonnelModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Add New Personnel Assignment</h5>
+                <button type="button" class="close" data-dismiss="modal">
+                    <span>×</span>
+                </button>
+            </div>
+            <div class="modal-body" id="addPersonnelFormContainer">
+                <!-- Form will be loaded via AJAX -->
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Edit Personnel Modal -->
+<div class="modal fade" id="editPersonnelModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Edit Personnel Assignment</h5>
+                <button type="button" class="close" data-dismiss="modal">
+                    <span>×</span>
+                </button>
+            </div>
+            <div class="modal-body" id="editPersonnelFormContainer">
+                <!-- Form will be loaded via AJAX -->
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- View History Modal -->
+<div class="modal fade" id="historyModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-xl" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Personnel Assignment History</h5>
+                <button type="button" class="close" data-dismiss="modal">
+                    <span>×</span>
+                </button>
+            </div>
+            <div class="modal-body" id="historyContainer">
+                <!-- History will be loaded via AJAX -->
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+$(document).ready(function() {
+    // Initialize DataTable
+    var table = $('#personnelDetailsTable').DataTable({
+        "processing": true,
+        "serverSide": false,
+        "ajax": {
+            "url": "<?php echo $this->url(array('module' => 'Detailpersonnel', 'controller' => 'personnel', 'action' => 'index'), null, true); ?>",
+            "type": "POST"
+        },
+        "columns": [
+            {"data": "DetailID"},
+            {"data": "PersonnelName"},
+            {"data": "DepartmentName"},
+            {"data": "PositionName"},
+            {"data": "FromDate"},
+            {"data": "ToDate"},
+            {"data": "Status"},
+            {"data": "IsActive"},
+            {"data": "Description"},
+            {"data": "CreatedAt"},
+            {"data": "CreatedByName"},
+            {"data": "Actions", "orderable": false}
+        ],
+        "pageLength": 25,
+        "lengthMenu": [[10, 25, 50, 100, -1], [10, 25, 50, 100, "All"]],
+        "order": [[0, "desc"]]
+    });
+
+    // Load Add Form
+    $('#addPersonnelModal').on('show.bs.modal', function() {
+        $.ajax({
+            url: "<?php echo $this->url(array('module' => 'Detailpersonnel', 'controller' => 'personnel', 'action' => 'add-personnel'), null, true); ?>",
+            type: "GET",
+            success: function(data) {
+                $('#addPersonnelFormContainer').html(data);
+                initializeDatepicker();
+            }
+        });
+    });
+
+    // Load Edit Form
+    $(document).on('click', '.edit-personnel', function() {
+        var id = $(this).data('id');
+        $.ajax({
+            url: "<?php echo $this->url(array('module' => 'Detailpersonnel', 'controller' => 'personnel', 'action' => 'edit-personnel'), null, true); ?>/id/" + id,
+            type: "GET",
+            success: function(data) {
+                $('#editPersonnelFormContainer').html(data);
+                initializeDatepicker();
+                $('#editPersonnelModal').modal('show');
+            }
+        });
+    });
+
+    // Delete Personnel Detail
+    $(document).on('click', '.delete-personnel', function() {
+        var id = $(this).data('id');
+        
+        if (confirm('Are you sure you want to delete this personnel assignment?')) {
+            $.ajax({
+                url: "<?php echo $this->url(array('module' => 'Detailpersonnel', 'controller' => 'personnel', 'action' => 'delete'), null, true); ?>",
+                type: "POST",
+                data: {id: id},
+                success: function(response) {
+                    var result = JSON.parse(response);
+                    if (result.success) {
+                        alert(result.message);
+                        table.ajax.reload();
+                    } else {
+                        alert(result.message);
+                    }
+                }
+            });
+        }
+    });
+
+    // View History (new feature)
+    $(document).on('click', '.view-history', function() {
+        var personnelId = $(this).data('personnel-id');
+        var personnelName = $(this).data('personnel-name');
+        
+        $.ajax({
+            url: "<?php echo $this->url(array('module' => 'Detailpersonnel', 'controller' => 'personnel', 'action' => 'history'), null, true); ?>",
+            type: "POST",
+            data: {personnel_id: personnelId},
+            success: function(response) {
+                var result = JSON.parse(response);
+                if (result.success) {
+                    var html = '<h5>Assignment History for: ' + personnelName + '</h5>';
+                    html += '<table class="table table-bordered">';
+                    html += '<thead><tr><th>Department</th><th>Position</th><th>From Date</th><th>To Date</th><th>Status</th></tr></thead>';
+                    html += '<tbody>';
+                    
+                    $.each(result.data, function(index, assignment) {
+                        html += '<tr>';
+                        html += '<td>' + assignment.DepartmentName + '</td>';
+                        html += '<td>' + assignment.PositionName + '</td>';
+                        html += '<td>' + assignment.FromDate + '</td>';
+                        html += '<td>' + (assignment.ToDate || 'Present') + '</td>';
+                        html += '<td><span class="badge badge-' + 
+                            (assignment.Status === 'Current' ? 'success' : 
+                             assignment.Status === 'Past' ? 'secondary' : 'info') + 
+                            '">' + assignment.Status + '</span></td>';
+                        html += '</tr>';
+                    });
+                    
+                    html += '</tbody></table>';
+                    $('#historyContainer').html(html);
+                    $('#historyModal').modal('show');
+                }
+            }
+        });
+    });
+
+    function initializeDatepicker() {
+              $(".datepicker").persianDatepicker({format: 'YYYY-MM-DD',  calendar:{
+        persian: {
+            leapYearMode: 'astronomical'
+        }
+    }});
+        
+   
+    }
+});
+</script>

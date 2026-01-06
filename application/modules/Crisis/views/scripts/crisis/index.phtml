@@ -1,0 +1,185 @@
+<?php 
+$translate = $this->translate;
+?>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title"><?php echo $translate->_('Crisis Management'); ?></h3>
+                    <div class="card-tools">
+                        <div class="input-group input-group-sm" style="width: 200px;">
+                            <input type="text" id="crisisSearch" class="form-control" 
+                                   placeholder="<?php echo $translate->_('Search...'); ?>">
+                            <div class="input-group-append">
+                                <button class="btn btn-default" id="searchBtn">
+                                    <i class="fa fa-search"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <button type="button" class="btn btn-primary ml-2" data-toggle="modal" data-target="#addCrisisModal">
+                            <i class="fa fa-plus"></i> <?php echo $translate->_('Add New Crisis'); ?>
+                        </button>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <table id="crisesTable" class="table table-bordered table-striped">
+                        <thead>
+                            <tr>
+                                <th><?php echo $translate->_('ID'); ?></th>
+                                <th><?php echo $translate->_('Crisis Code'); ?></th>
+                                <th><?php echo $translate->_('Crisis Title'); ?></th>
+                                <th><?php echo $translate->_('Type'); ?></th>
+                                <th><?php echo $translate->_('Status'); ?></th>
+                                <th><?php echo $translate->_('Created At'); ?></th>
+                                <th><?php echo $translate->_('Created By'); ?></th>
+                                <th><?php echo $translate->_('Actions'); ?></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Data will be loaded via AJAX -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Add Crisis Modal -->
+<div class="modal fade" id="addCrisisModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"><?php echo $translate->_('Add New Crisis'); ?></h5>
+                <button type="button" class="close" data-dismiss="modal">
+                    <span>×</span>
+                </button>
+            </div>
+            <div class="modal-body" id="addCrisisFormContainer">
+                <!-- Form will be loaded via AJAX -->
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Edit Crisis Modal -->
+<div class="modal fade" id="editCrisisModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"><?php echo $translate->_('Edit Crisis'); ?></h5>
+                <button type="button" class="close" data-dismiss="modal">
+                    <span>×</span>
+                </button>
+            </div>
+            <div class="modal-body" id="editCrisisFormContainer">
+                <!-- Form will be loaded via AJAX -->
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+$(document).ready(function() {
+    // Initialize DataTable
+    var table = $('#crisesTable').DataTable({
+        "processing": true,
+        "serverSide": false,
+        "ajax": {
+            "url": "<?php echo $this->url(array('module' => 'Crisis', 'controller' => 'crisis', 'action' => 'index'), null, true); ?>",
+            "type": "POST"
+        },
+        "columns": [
+            {"data": "CrisisID"},
+            {"data": "CrisisCode"},
+            {"data": "CrisisTitle"},
+            {"data": "CrisisTypeName"},
+            {"data": "IsActive"},
+            {"data": "CreatedAt"},
+            {"data": "CreatedByName"},
+            {"data": "Actions", "orderable": false}
+        ],
+        "pageLength": 10,
+        "lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]],
+        "language": {
+            "emptyTable": "<?php echo $translate->_('No data available in table'); ?>",
+            "info": "<?php echo $translate->_('Showing _START_ to _END_ of _TOTAL_ entries'); ?>",
+            "infoEmpty": "<?php echo $translate->_('Showing 0 to 0 of 0 entries'); ?>",
+            "infoFiltered": "<?php echo $translate->_('(filtered from _MAX_ total entries)'); ?>",
+            "lengthMenu": "<?php echo $translate->_('Show _MENU_ entries'); ?>",
+            "loadingRecords": "<?php echo $translate->_('Loading...'); ?>",
+            "processing": "<?php echo $translate->_('Processing...'); ?>",
+            "search": "<?php echo $translate->_('Search:'); ?>",
+            "zeroRecords": "<?php echo $translate->_('No matching records found'); ?>",
+            "paginate": {
+                "first": "<?php echo $translate->_('First'); ?>",
+                "last": "<?php echo $translate->_('Last'); ?>",
+                "next": "<?php echo $translate->_('Next'); ?>",
+                "previous": "<?php echo $translate->_('Previous'); ?>"
+            }
+        }
+    });
+
+    // Load Add Form
+    $('#addCrisisModal').on('show.bs.modal', function() {
+        $.ajax({
+            url: "<?php echo $this->url(array('module' => 'Crisis', 'controller' => 'crisis', 'action' => 'add-crisis'), null, true); ?>",
+            type: "GET",
+            success: function(data) {
+                $('#addCrisisFormContainer').html(data);
+            }
+        });
+    });
+
+    // Load Edit Form
+    $(document).on('click', '.edit-crisis', function() {
+        var id = $(this).data('id');
+        $.ajax({
+            url: "<?php echo $this->url(array('module' => 'Crisis', 'controller' => 'crisis', 'action' => 'edit-crisis'), null, true); ?>/id/" + id,
+            type: "GET",
+            success: function(data) {
+                $('#editCrisisFormContainer').html(data);
+                $('#editCrisisModal').modal('show');
+            }
+        });
+    });
+
+    // Delete Crisis
+    $(document).on('click', '.delete-crisis', function() {
+        var id = $(this).data('id');
+        var crisisCode = $(this).closest('tr').find('td:eq(1)').text();
+        
+        if (confirm('<?php echo $translate->_("Are you sure you want to delete this crisis?"); ?>' + '\n\n' + 
+                   '<?php echo $translate->_("Crisis Code:"); ?> ' + crisisCode)) {
+            $.ajax({
+                url: "<?php echo $this->url(array('module' => 'Crisis', 'controller' => 'crisis', 'action' => 'delete'), null, true); ?>",
+                type: "POST",
+                data: {id: id},
+                success: function(response) {
+                    var result = JSON.parse(response);
+                    if (result.success) {
+                        alert(result.message);
+                        table.ajax.reload();
+                    } else {
+                        alert(result.message);
+                    }
+                }
+            });
+        }
+    });
+
+    // Search functionality
+    $('#searchBtn').on('click', function() {
+        var searchTerm = $('#crisisSearch').val();
+        table.search(searchTerm).draw();
+    });
+
+    // Enter key for search
+    $('#crisisSearch').on('keyup', function(e) {
+        if (e.keyCode === 13) {
+            table.search(this.value).draw();
+        }
+    });
+});
+</script>
